@@ -1,0 +1,119 @@
+\begin{multicols*}{2}
+[\section{Encapsulation: Classes and Methods}]
+
+
+
+\subsection{Designing a Robot}
+\paragraph{Interface and Implementation:}The interface of a well-designed object describes the services that the client wants accomplished. The good class designer begins by thinking about a class from the point of view of the client. The implementation of an object is the manner in which it performs its job.
+
+Encapsulation hides the nonessential. Rather than \texttt{forward()} and \texttt{backward()} methods, a truly useful robot would have methods with names like \texttt{vacuumHouse()}, \texttt{doLaundry()}, etc. A really useful robot would let you tell it what you wanted done and then have only a single method, \texttt{run()}!
+
+
+
+\subsection{Abstraction and Encapsulation: The First Iteration}
+The purpose of a well-designed class is to model an abstraction from the client’s point of view. This means you should always start by designing a minimal public interface, because the public interface is the only thing that the client will see. 
+
+\paragraph{Designing the public interface:} Some questions can be answered to better design an interface.
+
+\begin{itemize}
+    \item \textbf{Who:} What objects are going to use the services of your class? Such objects, called \textit{client objects}, which send messages to your objects and receive information in return.
+    \item \textbf{Where (Environment):} What is the environment in which your design will be implemented? The environment imposes limits on how your interface is actually designed.
+    \item \textbf{What:} What should the object do? This functionality is described from the user’s point of view. Many—sometimes most—of the methods you define will be necessary, yet will not appear in the public interface.
+\end{itemize}
+
+
+
+\subsection{Client Objects, Environment and Functionality}
+For the majority of programs that are written, discovering the right requirements is often more difficult than writing the code, and is more error-prone.
+
+A good first step in class design is to describe, in a single paragraph, exactly what the class you are building should do.
+
+[...] Once identified the cliend objects, the task is to create an interface that conforms to their needs.
+
+
+
+\subsection{Implementing the Interface}
+\paragraph{Template:} Begin with a template to remember necessary but logically non-essential details so you can concentrate on the essential. A template helps you to logically organize your class so the important parts stand out.
+
+\paragraph{STUBS:}  Write \textit{stubs} before you write method bodies. Stubs allow you to \underline{test your interface}!
+
+A stub method may contain is an outline of the steps necessary to perform that particular operation.
+
+\begin{minted}{java}
+    public int totalArea(List squareList) {
+        // STUB
+
+        // 1. Calculate the area of each square
+        // 2. Sum all areas
+        // 3. Return area
+        
+        return 0;
+    }
+\end{minted}
+
+\paragraph{Refining the Interface: }Designing a class is really an iterative process: you design a little, code a little, test a little, and then go back and design a little more. \newline
+
+One useful way to test the interface (once a minimal is build- with stubs), is to write programs that use the object and see if it does everything needed.  
+
+Paradoxically, the real advantage of writing code that uses your class is that it gets you out of the “implementation” mind-set. The danger is that you’ll fall victim to “featuritis”. Your design goal for the public interface is that it should be \underline{minimal and complete}.
+
+
+
+\subsection{Implementing State}
+\paragraph{Attributes: }The attributes of your objects store its state or characteristics.
+
+\paragraph{Hide Your Data:} All object and class attributes should be declared as \textbf{private}, without exception
+
+One of the major advantages, is that in decouples the interface from the implementation: The class implementation can change, and if interface is left the same, the class is perceived as the same. \newline
+
+To access such data, we can write \textit{getters} and \textit{setters}, but you \underline{shouldn't} generally write them. They uncover implementation.
+
+
+\paragraph{Three Class Design Errors:}
+\begin{itemize}
+    \item \textbf{Data Warehouse Trap}: An object is not a repository of data. Objects should contain both data and the methods that work on that data.
+    \item \textbf{Spectral Object Trap}: An object is not a collection of medthods. (Otherwise ask "why is the data I'm workin on stored in a different place than the operations that work on such data?".
+    \item \textbf{Multiple Personality Trap}: An object should model \underline{one} abstraction. Called principle of \textit{cohesion}. Usually, a multiple personality error is obvious from the name of the class.
+\end{itemize}
+
+\paragraph{Class Constants:} Store a single value that is shared amongs all objects and users outside of the class.
+
+    \textsl{\textsc{Tip}}: One way to use them is to have propper names for options: People are much better with association than just remembering that "2 stands for Sunken-Border." And that is true for developers and users of the class.
+    (\underline{Question} any number appearing in source code other than 0, 1 or -1.)
+
+
+
+\subsection{Writing Methods}
+Cohesion is also important when evaluating methods: Does each method represent, or model, a single operation? That is, are the methods themselves internally cohesive?
+
+
+\tip: If programs that use your objects rely primarily on \texttt{get()} and \texttt{set()} methods, this may be a sign that your interface is not complete, that client objects are having to process your object’s data. 
+
+\tip: Methods should tell an object to perform some meaningful behavior, not act as a way to read and write \texttt{private} data.
+
+
+\paragraph{Constructors:} Constructors must initialize an object in a \textit{valid state}, that is with every field initialized and all class invariants satisfied.
+
+Even default constructors, initialize the object with default valid field values. If no reasonable valid value exists for all members, one option is to prohibit the default constructor.
+
+If the values passed to a constructor don’t permit the construction of a valid object, the constructor should throw an exception rather than construct an invalid object. \newline
+
+
+The \textit{working constructor}, is the constructor that requires you to specify all the user-selectable inputs. It should be written the first, and write all overloaded constructors in terms of it (If you write completely separate constructors, you run the risk that, due to a programming error, an object constructed via constructor A will exhibit subtly different behavior from one constructed by constructor B.) \newline
+
+
+\tip: You have to be aware of how your constructors interact with superclass constructors (i.e. using \texttt{super} constructor in Java).
+
+\paragraph{Mutators:} Methods that change fields of an object are called \textit{mutator} methods. These mutator methods must \underline{preserve invariants} of the class.
+
+
+\paragraph{Accessors:} Methods that acces to information of the class and return some meaningful data.
+
+\tip: When your accessor method returns a reference to an object, the caller may be able to modify your object. We can avoid this by returning \textit{immutable} objects or a \textit{copy} of the object. Or better, don't return access to individual fields at all.
+
+\paragraph{Private Methods:} Classes are not function libraries. If you find yourself creating unneeded objects just to use their methods, you’ve fallen into the "spectral object trap" and you need to make those methods private.
+
+
+
+
+\end{multicols*}

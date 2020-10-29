@@ -1,0 +1,38 @@
+% ----- PACKAGES -----
+
+% Structure Packages
+\usepackage{multicol}   % multiple column file
+\usepackage{fancyhdr}   % headers customization
+\usepackage[a4paper, 
+            top=2cm, 
+            headsep=0.5cm,
+            bottom=1cm, 
+            hmargin={1cm,1cm}
+            ]{geometry}  % document geometry
+\usepackage[explicit]{titlesec}  % formatting titles
+\usepackage{lipsum}      % lorem ipsum generator
+
+%Main Packages
+\usepackage{lmodern}
+\usepackage{slantsc}     % slanted text (to mix small caps and italics)
+\usepackage{minted}      % computer code displayer
+\usemintedstyle{murphy}
+
+
+% ----- DOCUMENT STRUCTURE -----
+
+\pagenumbering{gobble}  % No page numbers
+
+\pagestyle{fancy}       % Header format
+\fancyhf{}
+\lhead{\textbf{Object-Oriented Design in Java}}
+\rhead{\date{\today}}
+
+\titleformat{\section}[block]  % Section Titles format
+  {\bf\Large\centering}{Chapter \thesection}{1em}{#1}
+\setcounter{section}{3}
+
+
+% ----- MACROS AND COMMANDS -----
+
+\newcommand{\tip}{\textit{\textsc{Tip}}}
