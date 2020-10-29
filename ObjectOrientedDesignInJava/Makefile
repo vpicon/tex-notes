@@ -3,6 +3,7 @@ TEXFLAGS := -shell-escape
 
 TARGET := oodesign_java_notes
 SOURCES := $(wildcard *.tex)
+SOURCES += $(wildcard chapters/*.tex)
 
 
 all: $(TARGET).pdf clean

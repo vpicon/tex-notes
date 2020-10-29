@@ -99,8 +99,18 @@ Even default constructors, initialize the object with default valid field values
 If the values passed to a constructor don’t permit the construction of a valid object, the constructor should throw an exception rather than construct an invalid object. \newline
 
 
-The \textit{working constructor}, is the constructor that requires you to specify all the user-selectable inputs. It should be written the first, and write all overloaded constructors in terms of it (If you write completely separate constructors, you run the risk that, due to a programming error, an object constructed via constructor A will exhibit subtly different behavior from one constructed by constructor B.) \newline
+The \textit{working constructor}, is the constructor that requires you to specify all the user-selectable inputs. It should be written the first, and write all overloaded constructors in terms of it (If you write completely separate constructors, you run the risk that, due to a programming error, an object constructed via constructor A will exhibit subtly different behavior from one constructed by constructor B.) 
 
+\begin{minted}{java}
+    public Fraction(int num, int den) {
+        this.numerator = num;
+        this.denominator = den;
+    }
+
+    public Fraction(int num) {
+        this(num, 1);  // Overloaded valid state
+    }
+\end{minted}
 
 \tip: You have to be aware of how your constructors interact with superclass constructors (i.e. using \texttt{super} constructor in Java).
 
