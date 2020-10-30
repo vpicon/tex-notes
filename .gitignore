@@ -1,5 +1,4 @@
 # Latex intermediary files
-
 *.log
 *.aux
 *.out
@@ -8,3 +7,6 @@
 
 # More intermediary packages and files from latex 
 _minted*
+
+# Vim files
+*.swp

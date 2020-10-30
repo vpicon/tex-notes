@@ -1,0 +1,128 @@
+\newpage 
+
+\begin{multicols*}{2}
+[\section{Designing Classes and Objects}]
+
+
+
+\subsection{The Renter Applet}
+    \paragraph{Class Design:} A good design hides much of the complexity of
+    a class in the implementation of the class. Ideally, the interface of a
+    class should be small and simple.
+
+    There is an exception to the rule: when dealing with very simple classes 
+    often there will be more interface than implementation.
+
+
+
+\subsection{A System Design Process}
+    One approach can be applied to a variety of problems when designing a 
+    new program (or system).
+    \begin{enumerate}
+        \item Determine the requirements of the program.
+        \item Identify te classes and objects.
+        \item Describe the object collaborations and the classes.
+        \item Sketch the user interface.
+    \end{enumerate}
+
+    The design process is exploratory and \underline{iterative}. Each step 
+    may take the designer forward to the following step or back to a preceding 
+    step. If it seems to the designer as though a tentative design is going 
+    nowhere, the designer may abandon it and restart the entire process.
+
+
+
+\subsection{Determining the Requirements}
+    The \underline{first step} of object-oriented design is to determine the 
+    general requirements the program must satisfy.
+
+    \tip: Don't try to perfeclty design the system in your head. The trick is 
+    to get something down on the paper and then study it and improve it (The 
+    simple act of writing will help form ideas).
+
+    \paragraph{Summary Paragraph:} A good way to begin to determine the 
+    program requirements is to write a \textit{summary paragraph}. The summary 
+    paragraph should view the system from a functional perspective, focusing 
+    on the inputs and outputs of the system and on its external. In effect, 
+    it should describe the interface of the program rather than the 
+    implementation of the program.
+
+    This paragraph must be detailed: specify all but necessary actions.
+
+\subsection{Identifying Classes and Objects}
+    The next step in the object-oriented design is to identify al the classes
+    and objects that will comprise the program.
+
+    \paragraph{CRC Cards:} An effective way to identify classes and objects 
+    is by preparing what are known as CRC (\textit{class-responsiblity-collaboration}) 
+    cards. Each CRC card describes a single class in terms of the data 
+    attributes, responsibilities, and collaborations of the class. The 
+    responsibilities of a class are simply the messages it responds to (that 
+    is, the public methods it contains). The collaborations (or, collaborators, 
+    if you prefer) of a class are simply other classes that interact with the 
+    class by sending it messages or receiving messages from it.
+
+    \tip: CRC cards are prepared from a problem summary statement rather
+    than from a completed design. 
+
+    Some suggested ways of finding classes, responsibilities and collaborations
+    from the summary paragraph:
+    \begin{itemize}
+        \item \textbf{Classes:} Read through the problem summary statement 
+        and identify nouns and noun phrases, placing them on a list. 
+        Often it’s necessary that the design include classes that are merely 
+        implicit in the problem summary statement.
+        \item \textbf{Responsibilities:} Responsibilities relate to actions. 
+        A good starting place for finding responsibilities is in the verbs 
+        of the problem summary statement
+        \item \textbf{Collaborations:} After you’ve identified the classes 
+        and their responsibilities, finding the collaborations is easy. 
+        Simply scan the list of responsibilities of each class and identify 
+        any other classes it needs in order to fulfill its responsibilities. 
+        List these as its collaborations. 
+    \end{itemize}
+
+
+    [...] Design involves a myriad of such decisions, wherein each 
+    alternative gains you something, but only at a price. Knowing which to 
+    choose is no simple matter. That’s why good designs are usually the 
+    result of an iterative process. You make a decision that you later see 
+    was more costly than you’d originally thought. A conscientious designer 
+    will go back and \underline{try the other alternative}.
+
+    
+\subsection{Descibint the Object Collaboration and the Classes}
+    \tip: You may also discover that a class for which you prepared a CRC 
+    card is not as important as it initially seemed. For any such class, 
+    you allocate its responsibilities and attributes to other classes and 
+    discard its CRC card.
+
+    \paragraph{Use-Case Scenarios:} Just as CRC cards helped you discover 
+    classes, \textit{use-case scenarios} help you discover and describe collaborations. 
+    A use-case is simply a transaction or a sequence of related operations 
+    that the system performs in response to a user request or event. 
+
+    Walk through each use-case (transaction). During the walk-through, you 
+    try to identify the objects involved in the use-case and the messages 
+    they exchange. 
+
+    \paragraph{Class Diagrams:} Though CRC cards are helpful during design, 
+    they’re not very convenient for later reference. After you’ve completed 
+    the collaboration diagrams, you transfer information from each CRC card 
+    onto a \textit{class diagram}.
+
+
+    \begin{center}
+    \begin{tikzpicture}
+        \umlclass{Renter}{
+            -- theLender : Lender      \\ 
+            -- INITIAL\_QTY : int = 5  \\
+        }{
+            + void rentItem(Renter)    \\
+            + void returnItem(Renter)  \\
+            + void tellResult(String)  \\
+        }
+    \end{tikzpicture}
+    \end{center}
+
+\end{multicols*}
