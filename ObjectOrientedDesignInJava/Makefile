@@ -16,7 +16,7 @@ $(TARGET).pdf: $(SOURCES)
 		mv main.pdf $(TARGET).pdf
 
 
-read: $(TARGET).pdf
+read: all
 	evince $(TARGET).pdf &
 
 
