@@ -1,0 +1,122 @@
+
+\begin{multicols*}{2}
+[\section{Object Relationships: Compositions and Collections}]
+    Your PC is composed of self-contained parts that interact by using well-defined interfaces; these parts are easily tested and replaced \underline{without affecting the rest of your system}. Software too can be composed of parts that are tightly “wired” together, or it can be built in layers (subsystems), with each subsystem acting independently from the others, and with more complex systems made from differing arrangements of less complex and more fundamental parts.
+
+
+\subsection{Composition: The \textit{part-of} Relationship}
+    Sometimes, the best way to describe the relationship between two objects is to say that one object contains another object. It seems intuitive and natural to say that a car contains an engine, a university contains colleges, or a house contains a kitchen.
+
+    \paragraph{Compound Objects:} Whenever a particular object is composed of other objects, and those objects are included as object fields, the new object is known as a \textit{compound} object.
+    Individual objects can be combined to create a more complex and useful object. And just as a uses association implies greater coupling between its members than a weak association, so too the part-of relationship implies \underline{greater mutual dependence} than the simple uses association. \newline
+
+    \paragraph{Complex Systems:} Complex systems can be seen to include these four observations:
+    \begin{itemize}
+        \item Stable complex systems usually take the form of a \textit{hierarchy}, where each system is built of simpler subsystems, and each subsystem is built from simpler subsystems still.
+        \item Stable complex systems are \textit{nearly decomposable}. That means you can identify the parts that make up the system and can tell the difference between interactions between the parts and interactions inside the parts. Stable systems have fewer links between their parts than they do inside the parts.
+        \item Stable complex systems are almost always composed of only a few different kinds of subsystems, arranged in different combinations.
+        \item Stable complex systems that work have almost always evolved from simple systems that worked. Rather than build a new system from scratch—reinventing the wheel—the new system builds on the proven designs that went before it.
+    \end{itemize}
+
+    Using composition is one of the key techniques you can use in your battle against complexity.
+
+    Composition—building relatively independent subsystems using simple parts—is the technique you’ll most often use to apply the above insights to your own software designs.
+
+
+
+    \paragraph{Implementation of Composition Relationships:} You may wonder at this point what’s the difference between this new \textit{part-of} relationship and a simple \textit{uses} relationship. After all, as you saw in Chapter 7, the main way in which both weak associations and uses relationships are implemented is by embedding a reference to the associate as a field inside the class definition. Does this mean that those relationships are also composition relationships? Not at all.
+
+    The distinction between the three forms of association is a \textit{semantic} distinction, not an \textit{implementation} distinction. In Java, it’s likely that all three forms—weak association, uses relationship, and part-of relationship—will be represented in exactly the same way when the code is written.
+
+    \paragraph{Composition vs. Association:} Despite what the heading of this section might seem to imply, composition relationships are also a form of association. Specifically, composition is a strong form of the uses relationship. For composition to exist, either the parts or the whole must send messages to each other. If an object contains other objects and doesn’t send messages to those objects, such a relationship is a weak association, not a containment relationship. Thus, it’s something of a misnomer to speak of composition as entirely distinct from association.
+
+    Unlike a regular uses relationship, however, a composition relationship implies that one class (the whole) is made up of other objects (the parts). Composition is thus a whole-part relationship, where:
+    \begin{itemize}
+        \item One object is physically built from other objects.
+        \item An object represents a logical whole, composed of smaller parts.
+        \item Each part belongs to \underline{only} a single whole. 
+
+            \tip: This is a useful test to use to differentiate between composition and \textit{uses} relationships. (For example, in the \texttt{SalesInvoice} application, a single \texttt{Customer} may have placed several orders, and thus be referenced on several \texttt{SalesInvoices}. Therefore, the \texttt{SalesInvoice} doesn’t contain a \texttt{Customer} object.)
+        \item Each part lives and dies with the whole. 
+
+            For example, In the SalesInvoice application, you certainly wouldn’t want your Customers disappearing every time you deleted a SalesInvoice object. Therefore, this relationship is a uses relationship, not a composition relationship. You would, however, want the LineItems to disappear with the rest of the SalesInvoice when you deleted it. This second relationship is a composition relationship.
+    \end{itemize}
+
+    \paragraph{Example: A Labeled TextField}: Consider the example using the AWT Java library. The library provides a \texttt{Label} and \texttt{TextField} classes. However, not a Labeled Text Field class built-in class that combines both. By using composition, it's easy to build an aggregate object that meets the needs.
+
+    \newpage
+    \begin{minted}{java}
+    public class LTextField extends Panel {
+        // Constructor
+        public LTextField(String label, 
+                          int textSize);
+
+        // Public Interface
+        public String getText();
+        public void setLabel();
+
+        // Object Fields
+        private FixedWidthLabel theLabel:
+        private TextField       theText;
+    }
+    \end{minted}
+
+    The most important characteristic of the \texttt{LTextField} class is that its parts—the \texttt{FixedWidthLabel} and \texttt{TextField}—are encapsulated as part of its state. Users of the \texttt{LTextField} class have no more access to these internal parts of the \texttt{LTextField}. Instead, users are presented with a simplified interface.
+    \tip: So we should never return the aggregate objects themselves and let the user use the objects. That would break all the encapsulation!
+    By hiding non-essential details inside a class, and then replacing those details with a simpler interface, composition allows you to concentrate on the task at hand without getting bogged down in minutia, much the way procedures allowed an earlier generation to see their programs at a higher level of abstraction. 
+
+
+
+\subsection{Rules of Thumb for Composition}
+    Iteration—trying out a design, noting its deficiencies, and then building a better model—is an essential component of object-oriented modeling. However, unless you have some way of telling whether you’re actually making progress, you may end up in an endless loop. You need some way of telling whether you’re making net progress, and some idea of which direction to go. To build robust composite objects, you first have to decide which parts go with what whole. 
+
+    This is the main problem in composition: deciding what to put together and what to separate.
+    
+    \paragraph{Localize Message Traffic.} 
+    The first place to start looking for composite objects is to find out what objects already “hang out” together. Objects with high-frequency communication between them generally belong in the same subsystem. Objects with less communication belong in separate subsystems or modules. 
+
+    The closer you can get to a collection of independent modules working in concert, the more stable and maintainable your system will be. \underline{But not completely independent}, otherwise you wouldn't have a system, but merely a collection of autonomous agents.
+
+    \tip: Begin looking for communication links by identifying the frequency of message traffic between your objects. If you’ve already identified the associations in your system with the related messages, you’ve already done this.  
+
+    Arthur Riel suggests that if a class contains objects of another class, the container should be sending messages to the contained objects. Furthermore, most of the methods defined in the class should be using most of the data members most of the time. These rules will help you determine which objects should be eliminated as candidates for composite classes.
+
+    \paragraph{Avoid Mixing Domains.}
+    In software development, a subsystem's domain is the area of functionality for which the subsystem is responsible.
+
+    Layering (breaking apart an application based on common functionality) is a time-tested method of grouping similar code together. As in the OSI model for computer networks, each layer provides a general service for networking applications.
+
+    The clear distinction between each domain makees it possible to write applications that work together, because each layer or part refrains from interfering with another, 
+
+ \tip: One natural form of layering, which you should definitely consider whenever you build software, is to separate the user-interface, data storage, and business logic portions of your programs into different layers. Most computer applications require you to process some information, store the information, and present the information to users. By keeping the data-storage logic out of your user-interface classes, you make it much less likely that changes to your input screens will affect the integrity of your data, or that switching database vendors will require you to rewrite your user interface. 
+
+ For systems of any size, you’ll also want to consider partitioning the business-logic portion of your program along functional lines. By breaking each of these functional parts into its own subsystem, and then defining a set of clearly defined interfaces to facilitate communication between them.
+
+
+    \paragraph{Isolate The Changeable.}
+    A third criterion for composition is to group objects by their \textit{stability}, their tendency to change. If you can, identify those portions of your system likely to change, and put those parts together. Then, combine the relatively unchangeable parts into separate subsystems. That way, when the inevitable change comes, rather than make changes scattered throughout 10 subsystems, you can concentrate on only one or two.
+
+
+    \paragraph{Create Simple Interfaces.}
+    Whereas composite objects should have high-frequency internal communication (that is, most of the methods should use most of the objects most of the time), communication between the “outside” world and the object should have lower frequency. This corresponds to the procedural idea of loose coupling between functions. One way to facilitate this is to create simple interfaces.
+
+    One consequence of using composition in this way is that users of \texttt{LTextField} objects can’t do all the things that they might do with the component parts. You may instinctively recoil at these restrictions and set about making sure that \texttt{LTextFields} have at least as rich an interface as the \texttt{TextField} and \texttt{Label} objects. You should, however, resist this impulse. The strength of composition lies in its capability to bring structure to complexity. Just as the simpler interface of the steering wheel, gas pedal, and brake harnesses the complexity of the automobile, so too you should \underline{use composition to build ease-of-use into your objects}. [For those times when all the gears and levers need to be visible, such as the cockpit of a jetliner, inheritance rather than composition is the better choice.]
+
+
+    \paragraph{Generalize When Possible, Specialize When Necessary.}
+    Another problem you’ll encounter when creating composite objects is deciding how general or specific each part should be. By making very specific parts—parts specialized to do only a single task—you reduce the effort that a user needs to expend in using your part. On the other hand, if you create only specialized parts, you’ll soon be drowning in classes. \underline{A better solution is to specialize only when necessary}.
+
+    \tip: As mentioned earlier in the chapter, stable complex systems tend to be composed of a few simple parts, arranged in different ways. If you want your system to be maximally stable, create generalized parts whenever you can.
+
+
+    \paragraph{Prefer A Tree To A Forest.}
+    Should your composite objects be shallow or deep?
+
+    In a shallow containment hierarchy (\textit{forest}), most composite objects have many fields, and the fields are composed of relatively basic types. (These basic types aren’t necessarily the language’s primitive types, but could be simple concrete components, strings, or other "built-in" objects.) As the previous section mentioned, building a system in this way—from only a few parts—tends to promote stability. 
+
+    In a deep containment hierarchy (\textit{tree}), your system is composed of more vertical layers.
+
+    The main argument in favor of deep hierarchies is that, as humans, our short-term memory can handle only a limited amount of information.  To handle greater amounts of information, we combine related pieces together into chunks. When you create a deep hierarchy, you limit the amount of information you need to absorb at any one level. 
+
+
+\end{multicols*}
