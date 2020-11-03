@@ -1,0 +1,173 @@
+\newpage 
+
+\begin{multicols*}{2}
+[\section{Object Relationships: Implementing Associations}]
+
+    \indent Relationships play a central role in software design. Describing, defining, and working on the relationships between classes and objects is one of the chief occupations of the object-oriented designer. Here we study \textit{association relationships}: relationships between objects in which the objects exchange messages.
+
+
+\subsection{The Basics of Relationships}
+    [Object Oriented] programs are communities of objects that collaborate to accomplish a goal. For that collaboration to be effective, these communities of classes must be organized. Like human communities as well, not just any organization will do. 
+
+    One way to decide whether a particular organizational strategy is likely to be successful is to rely on simple rules, usually formed from past experience. Such rules are called \textit{heuristics}. These help you design classes and objects that are robust, easy to use, and resistant to the unintended side effects of inevitable change. Two kind of rules exist for designing relationships:
+    \begin{enumerate}[label=\roman*)]
+        \item Rules that help you decide which kind of relationship will be most effective.
+        \item Rules that help you implement a particular relationship most effectively.
+    \end{enumerate}
+    Let's first see what's available.
+
+    \paragraph{Types of Relationships:} There are two basic types of realtionships: \textit{class relationships} and \textit{object relationships}. Class realtionships always involve inheritance. Each individual object always has this fixed relationship with the other related class (see next chapter). Object relationships, called \textit{associations} are the relationships objects use to work together, and not all objects of the class are required to obey the relationship.
+
+
+\subsection{Kinds of Associations}
+    Object realtionships (or associatinos) are more flexible than class realtionships and come in a wider variedy. Objects can work together in three different ways:
+    \begin{itemize}
+        \item An object ca se another object to do some work. Also called an \textit{association}, or \textit{acquaintance}, or \textit{uses} relationship.
+        \item A complex object may be composed of several simpler parts. Called a \textit{composition} relationship.
+        \item When two object depend on each other but don't directly interact, a \textit{simple} or \textit{weak association} is formed.
+    \end{itemize}
+    \tip: In reality, there aren’t just three forms of association. These somewhat simplistic categories make it easier for you to analyze the collaborations between objects, but don’t be surprised if you have difficulty “fitting” a particular collaboration into one of these.
+
+    \paragraph{Coupling:} The underlying principle behind these categories is found in the idea of \textit{coupling}, which measures the mutual dependence of two objects on each other. In general, you want to create classes that are as loosely coupled as possible while still being able to efficiently carry out their responsibilities. This goal is laudable; however, most of the time the nature of the problem itself will dictate the type of association you must use.
+
+\subsection{How Many? A Cardinal Question}
+    When you design associations between objects, regardless of the type of association, you should ask yourself these questions:
+    \begin{itemize}
+        \item Which objects collaborate with which other objects?
+        \item How many objects will participate in the association?
+        \item Is the association \textit{mandatory} or \textit{optional}?
+    \end{itemize}
+    \tip: Draw some simple collaboration diagrams to see the collaborating classes and all the different collaborating objects. 
+
+    \paragraph{Cardinality:} \textit{Cardinality} refers to the number of objects that participate in an association and whether their participation is optional or mandatory. Every relationship has two sides. It i normally represented in a collaboration diagram.
+
+    \begin{center}
+    \begin{tikzpicture}
+        \umlemptyclass{SalesInvoice}
+        \umlemptyclass[x=5]{Customer}
+        \umlassoc[arg1=0..N, arg2=1]{SalesInvoice}{Customer}
+    \end{tikzpicture}
+    \end{center}
+
+    Every relationship needs some rules, even if they’re informal and unspoken. E.g. Every \texttt{SalesInvoice} object collaborates with only one \texttt{Customer} object. You may wish you could bill the same invoice to more than one \texttt{Customer}, but that would be illegal as well as unethical. Also, every \texttt{SalesInvoice} object must have a \texttt{Customer}—you can’t send out a bill without one.
+
+    The first rule in an association relationship is the membership criteria (who gets to join?). The cardinality constraints lay out the answers to this fundamental question. \newline
+
+    To implement an association, you not only have to know about the cardinality of the association, you also have to know how messages will be passed.
+
+
+
+\subsection{Objects That Use Objects}
+    Whenever one object sends a message to another object, a uses relationship is established between the object that sends the message and the object that receives it. Does an object send messages to or receive messages from another object? If so, a uses relationship exists between those two objects.
+
+    One defining characteristic of the uses relationship is that it doesn’t require the same level of commitment as other relationships. The uses relationship generally implies a lower level of coupling between objects than inheritance or containment relationships do.
+
+    \paragraph{Implementation:} When trying to implement a \textit{uses} relationship between two objects, then a queston arises: how does the first object (the \textit{sender}) know the name of the second object (the \textit{receiver})? [Read \textit{Object-Oriented Design Heuristics}, Arthur J. Riel for more on the below treatment.]
+
+    Consider the relationship between a car and a gas station. It doesn't make sense to say that a car contains a gas station; however, cars do ask gas stations to give them gasoline. How does the car know the name of the gas station? There are five implementations of the uses relationship aside from using a containment relationship (aside from uses via \textit{containment}).
+
+    \begin{enumerate}
+        \item The car is given the name of the gas station as a formal parameter of the message.
+\begin{minted}{java}
+// In Car class ...
+public void getGasoline(GasStation theStation, 
+                        int quantity) {
+    theStation.giveMeGasoline(quantity);
+    // Do more stuff ...
+}
+\end{minted}
+
+        \item The car asks a third-party class (for example a map or a gps system for the name of an appropriate gas station.
+\begin{minted}{java}
+// In Car class ...
+public void getGasoline(int quantity) {
+    GasStation theStation;
+    theStation = this.GPS.findGasStation();
+    theStation.giveMeGasoline(quantity);
+    // Do more stuff ...
+}
+\end{minted}
+
+        The problem here is delayed, where do we get the name from the third-party class? (In the example above, it was from a composition realtionship.)
+    
+        \item A third possibility is that all cars in the world go to one global gas station and we all know its name by convention. This is actually a special case of the first method, since global data are considered implicit parameters to a method. (In the example it is done through a class constant.)
+\begin{minted}{java}
+// In Car class ...
+private static final GasStation theStation;
+
+public void getGasoline(int quantity) {
+    theStation.giveMeGasoline(quantity);
+    // Do more stuff ...
+}
+\end{minted}
+
+        \item This method is for the wealthy. Whenever our car needs gasoline, we pull over onto the side of the road, buy the land that's there, build a gas station, use the gas station, and destroy the gas station when we leave. In short, the \texttt{getGasoline()} method for the car class builds a gas station as a local object, uses it, and the  destroys it on exiting the method. 
+\begin{minted}{java}
+// In Car class ...
+public void getGasoline(int quantity) {
+    GasStation theStation = new GasStation();
+    theStation.giveMeGasoline(quantity);
+    // Do more stuff ...
+}
+\end{minted}
+
+        While this is not appropriate for the car/gas station domain, there are many domains where building a local object to perform some functionality is useful.
+
+        \item last method for implementing the uses relationship is that "God" tells a car, when it is built, who its gas station is. The car stores this information in a special type of attribute called a \textit{referential attribute} for later use in the \texttt{getGasoline()} method.
+\begin{minted}{java}
+// In Car class ...
+public Car(GasStation theStation, ...) {
+    this.myStation = theStation;
+    // Other constructions ...
+}
+
+public void getGasoline(int quantity) {
+    this.myStation.giveMeGasoline(quantity);
+    // Do more stuff ...
+}
+\end{minted}
+        A referential attribute is an object field that refers to another object, even though that object isn’t logically contained in the class that holds the field. Although this solution solves both the mandatory and validity constraints, it lacks a little something in practicality. Users of the class having the reference mustget hold of a fully constructed object before they can start. 
+    \end{enumerate}
+    
+
+\subsection{Rules for Using Objects}
+    Each Technique for implementing uses relationships has advantages and drawbacks.
+    You should use a referential attribute when:
+    \begin{itemize}
+        \item The object needs to be directed from several different methods, or the object stores persistent state information between method calls.
+        \item The object you are going to use is used repeatedly.
+        \item The object you are going to use is very expensive or time consuming to construct, and you will use the object more than once.
+    \end{itemize}
+    You should pass the object you’ll use as an argument when:
+    \begin{itemize}
+        \item The object you want to use will be used only in a single method.
+        \item It’s easier to construct the object you want to use outside your class. This is the case when the object you’re going to use brings in some information supplied by the caller.
+    \end{itemize}
+    You should construct the object you want to use on-the-fly—that is, inside the method where it’s used—when:
+    \begin{itemize}
+        \item The object will be used in only that method.
+        \item The invoking object has information needed to construct the object that will be used, information that would be more difficult or impossible for an outside caller to supply.
+    \end{itemize}
+
+
+
+\subsection{Optional Associaions}
+    The major difference between the \texttt{SalesInvoice-Customer} association and the \texttt{SalesInvoice-Recipient} association is that the \texttt{SalesInvoice-Recipient} association is \textit{optional} rather than mandatory. You could, if you wanted, make this relationship mandatory, but making it optional allows you to look at how you can implement such optional associations.
+
+    An optional \texttt{Recipient} association means that the \texttt{shipTo} field contained in the \texttt{SalesInvoice} class can refer to either a valid \texttt{Customer} object or a \texttt{null} reference.
+
+
+    This means that we would have to check for special \texttt{null} cases everywhere we have an optional association.  This is the major difficulty you’ll encounter when you want to implement optional relationships: \underline{they make the code more complex}.
+\tip: However, don't fake mandatory associations just for simplicity's sake.
+
+\subsection{Weak Associations}
+A weak association exists whenever you have an association where no messages are exchanged, but the association is necessary to the success of the overall abstraction you’re trying to model.
+
+
+The real danger you face when confronted with a potential weak association is determining whether it’s really necessary for the abstraction you are working with.
+
+
+
+
+
+\end{multicols*}

@@ -12,11 +12,14 @@
 \usepackage[explicit]{titlesec}  % formatting titles
 \usepackage{lipsum}      % lorem ipsum generator
 
-%Main Packages
+% Utility Packages
 \usepackage{lmodern}
 \usepackage{slantsc}     % slanted text (to mix small caps and italics)
 \usepackage{minted}      % computer code displayer
 \usemintedstyle{murphy}
+\usepackage{enumitem}    % advanced enumeration options and macros
+
+% Project Specific Packages 
 \usepackage{packages/tikz-uml}
 
 
@@ -37,3 +40,11 @@
 % ----- MACROS AND COMMANDS -----
 
 \newcommand{\tip}{\textit{\textsc{Tip}}}
+
+% ----- ENVIRONMENTS -----
+\newenvironment{myitemize}
+{ \begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}     }
+{ \end{itemize}                  }
