@@ -12,15 +12,21 @@
 \usepackage[explicit]{titlesec}  % formatting titles
 \usepackage{lipsum}      % lorem ipsum generator
 
+
 % Utility Packages
+\usepackage{hyperref}    % references of links
+\usepackage{enumitem}    % advanced enumeration options and macros
+
 \usepackage{lmodern}
 \usepackage{slantsc}     % slanted text (to mix small caps and italics)
+
 \usepackage{minted}      % computer code displayer
 \usemintedstyle{murphy}
-\usepackage{enumitem}    % advanced enumeration options and macros
+
 
 % Project Specific Packages 
 \usepackage{packages/tikz-uml}
+
 
 
 % ----- DOCUMENT STRUCTURE -----
@@ -36,10 +42,15 @@
   {\bf\Large\centering}{Chapter \thesection}{1em}{#1}
 \setcounter{section}{3}
 
+\setcounter{secnumdepth}{3}  % Allow subsubsections
+
+
 
 % ----- MACROS AND COMMANDS -----
 
 \newcommand{\tip}{\textit{\textsc{Tip}}}
+
+
 
 % ----- ENVIRONMENTS -----
 \newenvironment{myitemize}

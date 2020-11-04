@@ -1,0 +1,147 @@
+
+\begin{multicols*}{2}
+[\section{Implementing Class Relationships: Inheritance and Interfaces}]
+
+\subsection{From Encapsulation to Inheritance}
+    \textit{Encapsulation}—the specification of attributes and behavior as a single entity—allows us to build on this understanding of the natural world as we create software. By creating abstract data types that model categories in the “real world,” we have confidence that our software solutions closely track the problems we are trying to solve, rather than think in terms of computer files and variables.
+    \textit{Inheritance} adds to encapsulation the ability to express relationships between classes.
+    \begin{itemize}
+        \item Superclasses and subclasses can be arranged in a hierarchy, with one superclass divided into numerous subclasses, and each subclass divided into more specialized kinds of subclasses. 
+        \item A classification hierarchy represents an organization based on generalization and specialization. The superclasses in such a hierarchy are very general, and their attributes few.
+    \end{itemize}
+
+    \paragraph{Reuse and Organization:} Inheritance gives you a way of taking existing classes and using them to make new and different classes. Rather than build a \texttt{BeveledPanel} class from scratch, for instance, you can use the Panel class you already have and just write code for the aspects that are different. Your new \texttt{BeveledPanel} class will silently and invisibly inherit all the fields and methods from its superclass, \texttt{Panel}; \underline{you don’t have to do any extra work at all}. 
+
+
+    \paragraph{Kinds of Inheritance Relationships:} When working with inheritance, the new class \textit{is a kind of} the existing class (often called \textit{isA} relationship. However, there are three forms of this \textit{isA} relationship:
+        \begin{itemize}
+            \item \textbf{Extension relationship.} A subclass may \textit{extend} an existing class, so that all the data members and methods of the class are left intact, and only new methods or fields are added.
+That is we inherit the public interface and implementation of the superclass.
+            \item \textbf{Specification relationship.} A superclass may specify a set of responsibilities thhat a subclass must fulfill, but not provide any actual implementation. That is, we only inherit the interface of the superclass.
+            \item \textbf{Combination of extension and specification.} We call this \textit{polymorphic inheritance} because its principal value lies in its ability to provide specialized behavior in response to the same messages.
+        \end{itemize}
+
+    \subsubsection{Discovering Inheritance Relationships}
+    \underline{After} you decide on the classes and objects in your system, and after you decide which objects cooperate together to form association relationships, you are ready to begin looking at the \textit{class relationships} in your system.
+
+    Your inheritance hierarchy will evolve from \underline{both} iterative rounds of top-down specialization and bottom-up generalization. 
+
+
+    \paragraph{Specialization:} Is when one class is semantically \textit{is-a-kind-of} another class. The subclass inherit both data and methods from parent, and won't be redefined. (E.g. the \texttt{CoffeMachine} is a specialized form of the more general \texttt{VendingMachine} class, and won't redefine but use the \texttt{collectMoney()} and \texttt{makeChange()} inherited methods.
+
+    \paragraph{Substitutablity and Subtyping (Liskov Principle):} When you decide that one class is a specialization of another, you need to see whether it’s a \textit{subtype}. Having one class as a subtype of another means that you can use the new, more specialized type anywhere an object of the original type would appear. 
+
+    This test—the \textit{Liskov Substitution Principle}—is especially important when you’re designing class hierarchies.
+
+    In \textit{strict subtyping}, you have the additional requirement that not only does every subclass have to carry out the meaning of the interface defined in the superclass, but it must also rely on the methods already defined in the superclass to do so.
+
+    Check out the \href{https://en.wikipedia.org/wiki/SOLID}{SOLID} principles of Object-Oriented design.
+
+    \paragraph{Generalization:} Sometimes when working on an inheritance hierarchy, you’ll notice that several classes have data and methods in common. In the object-oriented world, this is a clue to look for generalization.
+
+    \tip: When looking at the superclass in a such a relationship, you can call it a generalization. When looking from the other direction, it’s a specialization. The only difference is in the way the relationship is originally discovered.
+
+    For example, if writting some classes \texttt{CoffeeMachine} and \texttt{SodaMachine}, you might notice the common factors in these classes, and you could use those factors to create a new generalized superclass (say \texttt{VendingMachine}) that encapsulated the shared information.
+
+    \paragraph{Specification:} Sometimes you kwow \textit{what} a subclass should do, but simply have no idea \textit{how} it should do it. In this case you want to \textit{specify} what the soubclass should do, and let the compiler make sure each subclass complies.
+
+    For example, consider a class \texttt{Shape}, wich we know it should have a \texttt{draw()} method, but how are we going to paint an abstract shape? Specific shapes, like \texttt{Circle} and \texttt{Square} that inherit \texttt{Shape}, must implement their specific \texttt{draw()} method.
+
+    \paragraph{Specialization and Specification:} When you have a class that needs to specify some behavior that a subclass must perform, and yet has some behavior of its own to pass on to its subclasses, you find yourself needing a combination of specialization and specification. (Maybe, the above example fits in this case.)
+
+    
+    \paragraph{Pure Specification:} You may find remaining places where you want to factor out common behavior. The problem is that the objects sharing that common behavior may be \underline{otherwise unrelated}. Here we use these \textit{pure specifications} (also \texttt{interface} in Java).
+
+    This inteface mechanism differs in from other forms of inheritance in several ways:
+    \begin{itemize}
+        \item  When a class implements an interface, it doesn’t receive any method implementations or nonfinal fields from the interface. Just public interface and constant public data.
+        \item A class may implement several interfaces.
+        \item Classes that implement the same interface don’t need to be substitutable in the Liskov sense, except with respect to the interface they implement.
+    \end{itemize}
+
+
+    \paragraph{Inheritance of Implementation: Contraction.} This is a form of inheritance which \underline{must be avoided}. In this form, we inherit a superclass for a specific functionality, and delete all other uninteresting interface. This should be avoided for two reasons:
+    \begin{itemize}
+        \item You're violating the substitutability rule.
+        \item It is more work than the right thing to do.
+    \end{itemize}
+
+    \tip:You might find yourself tempted to use contraction in one last place—when you have misidentified an \textit{isA} relationship and don’t want to go back to square one. In this case, the best thing to do is \underline{redesign} the system.
+
+
+\subsection{Implementing Inheritance}
+    The first step in designing any object is deciding what you'd like it to do. Start with the fundamental requirements first, then refine design as you iterate through succeeding generations.
+
+    \paragraph{Choosig An Implementation Mechanism:} What form of inheritance is appropriate? To answer the question, look at the requirements of the class, then ask the following questions:
+
+    \begin{enumerate}
+        \item Is the new class a subtype of an existing class? Can you use the new class anywhere you would have used the previous one, without making any changes? If so—if the new class is substitutable for the existing class—you should use inheritance.
+        \item Do you want the new class to inherit behavior, or only an interface, from the existing class?
+
+        \item Will the existing behavior be modified, or are you just adding new behavior? Most of the time, a subclass will make some change to the behavior of its superclass. 
+            \tip: Even if you don’t plan on making such a modification at first, you may choose to make one in the future. Thus, in almost all cases that call for inheritance, you’ll want to use polymorphic inheritance rather than simple extension.
+    \end{enumerate}
+
+    \paragraph{Inheritance and Constructors:} Whenever you use inheritance, the constructor for your new subclass calls the constructor for its superclass before it begins executing its own statements. 
+
+    You may explicitly choose to call a specific superclass constructor. 
+
+    \begin{minted}{java}
+    public class Dog extends Animal {
+        // Constructor
+        public Dog(int weight, ...) {
+            // Superclass constructor
+            super(weight); 
+
+            // Do more stuff
+        }
+    }
+    \end{minted}
+
+    \paragraph{Inheritance and Overriden Methods:} To override an inherited method, you must declare the method with exactly the same signature as in the superclass method. 
+
+    Sometimes, we simply want to augment the overriden method, rather than defining a completely new behavioror. If you want to replace the behavior of your superclass wholesale, you don’t have to do anything special. You can use the \texttt{super} object (not to be confused with the \texttt{super()} method, which can be used only in a constructor) to invoke a superclass method in such cases. 
+
+
+    \begin{minted}{java}
+    public class Panel3D extends Panel {
+        public void paint(Graphics g) {
+            // Call the Panel.paint() method
+            super.paint(g);
+            
+            // Augment the method ...
+        }
+    }
+    \end{minted}
+
+
+\subsection{Writing and Using Interfaces}
+    \textit{Extension}, or \textit{inheritance}, means that a subclass is a kind of its superclass—that the subclass is a more specialized form of its more general superclass. By contrast, the \textit{interface} mechanism is used to model a relationship between classes that share a specific set of behaviors (an interface) but don’t need to be otherwise related. Because of this, implementing an interface is sometimes called \textit{inheritance of specification}.
+
+    Consider for example the interface \texttt{Nameable}:
+
+    \begin{minted}{java}
+    public interface Nameable {
+        public String getName();
+        public void setName(String name);
+    }
+    \end{minted}
+
+    \noindent The following two classes: \\
+    \indent \mintinline{java}{class Dog extends Animal implements Nameable} \\
+    \indent \mintinline{java}{class Employee implements Nameable} \\
+    implement the \texttt{Nameable} interface, but are not related by any means. The interface just sets a contract that a class that implements it can perform a certain action or behavior, and it may share this capability with other classes, but it’s not necessarily related to those other classes.
+
+
+
+\stepcounter{subsection}
+\subsection{\texttt{ImageButtons:} An Extended Inheritance Example}
+We want an \texttt{ImageButton} class that have buttons displaying images instead of text. In Java AWT we have both \texttt{Buttons} and \texttt{Images} classes. Which one can we use? It is that an \texttt{ImageButton} is a \texttt{Button} that contains an \texttt{Image}, or a \texttt{Clickable} \texttt{Image}? There’s no hard-and-fast rule for making these decisions, but you should start by asking yourself, “Is an \texttt{ImageButton} a special kind of \texttt{Button}?” If your answer is yes, you should probably use inheritance and extend the \texttt{Button} class. If you do this, remember the following:
+    \begin{itemize}
+        \item Everything a \texttt{Button} does, an \texttt{ImageButton} should do as well. After all, your design asserts that an \texttt{ImageButton} \textit{isA} \texttt{Button}.
+        \item Anywhere you have a reference to a \texttt{Button} object, you should be able to refer to an \texttt{ImageButton}. The \texttt{ImageButton} should be perfectly substitutable for the built-in \texttt{Button}, and clients should be unaware that any substitution has been made.
+        \item The \texttt{ImageButton} may extend the data or behavior of the \texttt{Button} class, but it shouldn’t attempt to “remove” methods from the Button class by overriding them with empty methods. (Otherwise the \texttt{ImageButton} is not really a \texttt{Button} after all, but just has some behavior that you find attract.)
+    \end{itemize}
+
+
+\end{multicols*}
