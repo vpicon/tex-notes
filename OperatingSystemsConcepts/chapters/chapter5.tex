@@ -1,0 +1,81 @@
+\newpage 
+
+\begin{multicols*}{2}
+[\section{Process Synchronization}]
+
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+
+\subsection{Mutex Locks}
+Operating systems designers build software tools to solve the critical-section problem. The simplest and most basic of these is the \textit{mutex lock}.
+
+\begin{code}
+    do {
+        acquire(&lock);
+            /* critical section */
+        release(&lock);
+            /* remainder section */
+    } while (true);
+\end{code}
+
+    A process must \texttt{acquire()} the lock before entering a critical section, and then \texttt{release()} it at after exiting the section. A process that attempts to acquire an unavailable lock is \textit{blocked} until the lock is released. Thus the mutex lock protect critical regions and prevent race conditions. These operations are defined as:
+
+% TODO: Search for a way to put two code snippets side by side
+\begin{code}
+  acquire() {                 release() {
+    while(!available)             available = true;
+          ; /* busy wait */   }
+      available = false;
+  }
+\end{code}
+
+    Calls to either \texttt{acquire()} or \texttt{release()} must be \underline{atomic} (usually implemented through \texttt{test\_and\_set()} and \texttt{compare\_and\_swap()}).
+
+    The main disadvantage of the implementation is that it requires \underline{busy waiting}: waiting blocked in a loop for the call to \texttt{acquire()}, that is, the CPU is "wasting" work by waiting in the loop. Busy waiting mutexes are also called \textit{spinlock}.
+    Spinlocks have an advantage: they require context switch (which are expensive) when locking a process (compare it to condition variables). Thus, when locks are expected to be held for only short times, spinlocks may be cheaper than other kinds of locks.
+
+
+\subsection{Semaphores}
+
+    A \textit{semaphore} $S$ is an integer variable accessed with \underline{atomic} operations \texttt{wait()} and \texttt{signal()}, defined as follows:
+
+% TODO: Search for a way to put two code snippets side by side
+\begin{code}
+     wait(S) {                    signal(S) {
+         while(S <= 0)                S++;
+             ; /* busy wait */    }
+         S--;
+     }
+\end{code}
+
+\paragraph{Kinds of Semaphores}
+A \textit{counting semaphore} can range over an unrestricted domain. A \textit{binary semaphore} can range between 0 and 1 (thus are equivalent to mutex locks).
+    
+    Counting semaphores can be used to control access to a given resource consisting of a finite number of instances. Init the semaphore to the total available resoureces. When a process wishes to use a resource, performs a \texttt{wait(S)} (decrementing the count of available resources). At resource release, perform \texttt{signal()} (incrementing the count).
+
+\paragraph{Semaphore Implementation}
+    Rather than busy waiting (as in mutex locks), semaphores can be made to block the process when calling a \texttt{wait()} operation. Waiting processes are sent to a queue of waiting processes (waiting, in the sense of the operating system process). 
+
+    When another process calls \texttt{signal()}, then a process in the list is restarted by a \texttt{wakeup()} operation, which changes the process from waiting state to ready state. A simple implemetation to this definition:
+
+\begin{code}
+    typedef struct {
+        int value;
+        struct process *list;
+    } semaphore;
+\end{code}
+
+\tip: One way to add and remove processes from the list so as to ensure bounded waiting is to use a FIFO queue,
+
+
+\subsection{Monitors}
+    Several complex and tricky errors can ocur when programming with semaphores and locks. To deal with such errors, \underline{high-level language constructs} called \textit{monitors} are developed.
+
+    A \textit{monitor} is an \textit{abstract data type} (ADT) that includes a set of programmer defined operations that are provided with mutual exclusion within the monitor, thus ensuring that only one process at a time is active within the monitor.
+
+
+
+
+\end{multicols*}
