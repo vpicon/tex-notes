@@ -43,7 +43,6 @@
 \titleformat{\section}[block]  % Section Titles format
   {\bf\Large\centering}{Chapter \thesection}{1em}{#1}
 
-\setcounter{section}{4}      % Start counting at section 5
 
 \setcounter{secnumdepth}{3}  % Allow subsubsections
 
@@ -56,6 +55,17 @@
 
 
 % ----- ENVIRONMENTS -----
+\newenvironment{mysection}[1]
+{%
+    \newpage%
+    \begin{multicols*}{2}%
+    [\section{#1}]%
+}
+{%
+\end{multicols*}
+}
+
+
 \newenvironment{myitemize}
 { \begin{itemize}
     \setlength{\itemsep}{0pt}
