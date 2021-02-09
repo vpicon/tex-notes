@@ -42,6 +42,124 @@
     \end{itemize}
 
 
-        
+
+\subsection{Analyzing Algorithms}
+    \textit{Analyzing an algorithm} means to predict the resource that the alorithm requires. Such resources may be memory, communication bandwidth, computer hardware, or computational time. Generally, by analyzing several algorihtms for a problem, we can identify a most efficient one (or discard inferior candidate algorithms). We will mostly study the computational time taken by algorithms in this book. 
+    \paragraph{Model:} Before we can analyze an algorithm, we must have a \textit{model} of the implementation technology that we will use, including a model for the resources of that technology and their costs. Unless explicited, assume a generic one processor, \underline{random-access machine} (RAM). That is, instructions executed one after another with no concurrent operations, where each instruction taking constant time (being the set of instroctions in the RAM model the commonly found in real computers: load, store, copy, arithmetic, conditional branch, subroutine call and return.
+    \subsubsection{Analysis of Insertion Sort}
+    The time taken by the \procedure{Insertion-Sort} procedure depends on the input size, and also depending on how are arranged the item inside the array for two inputs of the same size. In general, running time will be a function of input size.
+
+    The notion of \textit{input size} depends on the problem: it may be the number of items in the input (as in the array size in a sorting problem), or the total number of bits to represent input (like the problem of integer multiplication). Sometimes, it is more appropiate to describe the size of input with two parameters (or more), such as in a graph problem with number of edges and number of vertices.
+
+    The \textit{running time} of an algorithm on a particular input is the time it takes to execute each primitive operation times the number of executions of those operations. We may assume that a \underline{constant amount of time is required to execute} \underline{each line of pseudocode}. That is, each execution of the $i$th line takes $c_i$ time, where $c_i$ is a constant.
+
+\begin{center}
+\begin{tabular}{ |c|c|c| }
+    \hline
+    Line Number & Cost & \# of Executions \\ 
+    \hline
+    1 & $c_1$ & $n$ \\
+    2 & $c_2$ & $n - 1$ \\
+    3 & $c_3$ & $n - 1$ \\
+    4 & $c_4$ & $\sum_{j = 2}^{n} t_j$ \\
+    5 & $c_5$ & $\sum_{j = 2}^{n} (t_j - 1)$ \\
+    6 & $c_6$ & $\sum_{j = 2}^{n} (t_j - 1)$ \\
+    8 & $c_8$ & $n - 1$ \\
+    \hline
+\end{tabular}
+\end{center}
+
+    We analyzed above the \procedure{Insertion-Sort} procedure time cost of each statement and the number of times each statement is executed. For each $j = 2, 3, \dotsc, n$, where $n = A.length$, denote $t_j$ be the number of times the \textbf{while} loop in line 5 is executed for that value of $j$. Then, the execution time of the algorithm is the sum of all the cost of each line times its number of executions:
+ 
+\vspace{-18pt}
+\setlength{\jot}{-8pt}% Inter-equation spacing
+\begin{align*} 
+    T(n) &= c_1n + c_2(n - 1) + c_3(n - 1) + c_4\sum_{j = 2}^{n}t_j \\ 
+         &+ c_5\sum_{j = 2}^{n} (t_j - 1) + c_6\sum_{j = 2}^{n} (t_j - 1) + c_8(n - 1).
+\end{align*} 
+
+Even for inputs of the same size, an algorithm's running time may depend on which input of that size is given. In this case, the \textit{best case} occurs when the array is already sorted, since for each $j$ we find that $A[i] \leq key$ in line 5 when $i = j - 1$ initially, thus having $t_j = 1$. Which yields a running time:
+
+\vspace{-13pt}
+\setlength{\jot}{4pt}% Inter-equation spacing
+\begin{align*} 
+    T_{\textrm{best}}(n) &= c_1n + c_2(n - 1) + c_3(n - 1) + c_4(n - 1) + c_8(n - 1) \\
+         &= (c_1 + c_2 + c_3 + c_4 + c_8)n  - (c_2 + c_3 + c_4 + c_8).
+\end{align*} 
+
+We thus can express this running time as $T_{\textrm{best}}(n) = an + b$ for some constants $a, b$; thus a \underline{linear function} of n.
+
+On the other side, if the array is in reverse order, we get the \textit{worst case} of $t_j = j$ for each value of $j$. And using that $\sum_{j = 2}^n j = \frac{n(n + 1)}{2} - 1$, and that $\sum_{j = 2}^n (j - 1) = \frac{n(n + 1)}{2} - 1$, we can rearrange the terms as before to get $T_{\textrm{worst}}(n) = an^2 + bn + c$, for some constants $a, b, c$: a \underline{quadratic function} of n.
+
+We could also compute an \textit{average-case} running time for a random input, and compute the expected value of the running time.
+
+\subsubsection{Order of Growth}
+It is the \underline{rate of growth} or \underline{order of growth} of the running time that interests us. We therefore consider only the most significative term as the size of input increases. Thus, the worst case running time of \procedure{Insertion-Sort} has a rate of growth of $n^2$. We sa that it has a worst case running time of $\Theta(n^2)$. We usually consider one algorithm to be more efficient than another if its worst-case running time has a lower order of growth.
+
+
+\subsection{Designing algorithms}
+For insertion sort, we used an \textit{incremental} approach: having sorted $A[1..j - 1]$ we then insert $A[j]$ in the proper place, yielding the sorted subarray $A[1..j]$. We examine a different approach now:
+
+\subsubsection{Divide and Conquer}
+Many algorithms are \textit{recursive} in sturcture: to solve a given problem, they call themselves recursively one or more times to deal with a closely related subproblem. These typically follow a \textit{divide-and-conquer} approach:
+
+    \begin{itemize}
+        \item \textbf{Divide} the problem into a number of subproblems that are smaller instances of the same problem.
+        \item \textbf{Conquer} he subproblems by soving them recursively. If the subproblem sizes are small enough, solve the problem in a straightforward manner.
+        \item \textbf{Combine} the solutions to the subproblems into the solution for the original problem.
+    \end{itemize}
+
+    When an algorithm contains a recursive call to itelf, we can describe its running time by a \textit{recurrence}, which describes the overall running time on a problem of size $n$ in terms of the running time of  smaller inputs. 
+
+    In divide and conquer algorithms we can describe the running time as a recurrence. As said, if the problem size is small enough, say $n \leq c$ for some constant $c$. the straightforward solution takes constant time, write as $\Theta(1)$. Suppose that the division of the problem yields $a$ subproblems, with each one being $1/b$ size of the original. And define $D(n)$ and $C(n)$ be the times to divide the subproblems and combine them, respectively, then we have the running time as:
+\vspace{-5pt}
+$$
+    T(n) =
+    \begin{cases}
+        \Theta(1)             & \text{if $n \leq c$,}\\
+        aT(n/b) + D(n) + C(n) & \text{otherwise.}
+    \end{cases}
+$$
+
+The \procedure{Merge-Sort} algorithm follows this divide-and-conquer approach:
+    \begin{itemize}
+        \item Divide the $n$-element array to be sorted into two subarrays of $n/2$ elements each.
+        \item Sort the two subarrays recursively using merge sort.
+        \item Merge the two sorted arrays to produce the sorted array.
+    \end{itemize}
+
+    The recursion "bottoms out" when the sequence to be sorted has length 1, in which case there is no work to be done, since it is an already sorted 1-element array.
+
+    The \procedure{Merge-Sort} array relies on the auxiliary procedure \procedure{Merge}$(A, p, q, r)$, where $A$ is an array, $p, q$ and $r$ are indices into the array such that $p \leq q < r$. The procedure assumes the subarrays $A[p..q]$ and $A[q + 1..r]$ are in sorted order. It merges them to form a single sorted subarray that replaces the current subarray $A[p..r]$. This procedure can be easily implemented to have a runtime of $\Theta(n)$, where $n = r - p + 1$.
+
+    The merge sort algorithm is then:
+
+\begin{pseudocode}{Merge-Sort}{A, p, r}
+    \IF{$p < r$}
+        \STATE $q = \lfloor(p + r)/2\rfloor$
+        \STATE \procedure{Merge-Sort}$(A, p, q)$
+        \STATE \procedure{Merge-Sort}$(A, q + 1, r)$
+        \STATE \procedure{Merge}$(A, p, q, r)$
+    \ENDIF
+\end{pseudocode}
+\vspace{10pt}
+
+And to sort the required sequence $A$ we call the algorithm procedure as \procedure{Merge-Sort}$(A, 1, A.length)$. 
+Assuming that $n$ is a power of 2, we can calculate the running time of the algorithm can be calculated as.
+\vspace{-5pt}
+$$
+    T(n) =
+    \begin{cases}
+        \Theta(1)             & \text{if $n \leq 1$,}\\
+        2T(n/2) + \Theta(n) & \text{otherwise.}
+    \end{cases}
+$$
+
+In later chapters we will solve the recurrence using the Master Theorem.
+
+
+
+
+
 
 \end{multicols*}
