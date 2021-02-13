@@ -27,6 +27,7 @@
 \usepackage{fvextra}
 
 \usepackage{amsmath}     % mathematics symbols
+\usepackage{amsfonts}     % mathematics fonts
 
 
 
@@ -107,4 +108,34 @@
     \end{algorithmic}%
     \end{centering}%
     \vspace{-2mm}%
+}
+
+
+\newenvironment{definition}
+{%
+    \vspace{2mm}%
+    \noindent\textbf{Definition}\hspace{0mm}
+}
+{%
+    \vspace{2mm}%
+}
+
+\newenvironment{remark}
+{%
+    \vspace{2mm}%
+    \noindent\textbf{Remark}\hspace{0mm}
+}
+{%
+    \vspace{2mm}%
+}
+
+\newtheorem{atheorem}{Theorem}[section]
+
+\newenvironment{theorem}
+{%
+    \begin{atheorem}
+    \normalfont
+}
+{%
+    \end{atheorem}
 }

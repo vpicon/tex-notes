@@ -1,0 +1,147 @@
+\newpage 
+
+\begin{multicols*}{2}
+[\section{Growth Of Functions}]
+
+\subsection{Asymptotic notation}
+    When studying the running-time of algorithms, we are interested in the asymptotic behaviour of a time-cost function taking values in the set of natural numbers $\mathbb{N} = \{0, 1, 2, \dotsc \}$. 
+
+\begin{definition}
+    Let $g$ be a function defined in $\mathbb{N}$. We denote $\Theta(g(n))$ the set of functions defined by:
+    \vspace{-6mm}
+
+\begin{align*}
+    \Theta(g(n)) = \{ f(n): \; &\exists c_1, c_2 \in \mathbb{R}^+, \; \textrm{and} \; n_0 \in \mathbb{N} \;\textrm{such that}\\ 
+                               &0 \leq c_1 g(n) \leq f(n) \leq c_2 g(n), \; \forall n \geq n_0 \}.
+\end{align*} 
+
+    If $f$ is another function taking values in $\mathbb{N}$, we denote that $f$ is in this set as ``$f(n) = \Theta(g(n))$''. We say that $g$ is an \textit{asymptotically tight bound} for $f$.
+\end{definition}
+
+
+    Note how the definition of $\Theta(g(n))$ requires that every member $f$ of the set to be \textit{asymptotically nonnegative} ($f(n) \geq 0$ for sufficiently large $n$). Consequently $g$ itself must be asymptitically nonnegative, or $\Theta(g(n))$ is the empty set.
+
+\begin{definition}
+    Let $g$ be a function defined in $\mathbb{N}$. We denote $O(g(n))$ the set of functions defined by:
+    \vspace{-6mm}
+
+\begin{align*}
+    O(g(n)) = \{ f(n): \; &\exists c \in \mathbb{R}^+, \; \textrm{and} \; n_0 \in \mathbb{N} \;\textrm{such that}\\ 
+                          &0 \leq f(n) \leq c g(n), \; \forall n \geq n_0 \}.
+\end{align*}
+    If $f$ is another function taking values in $\mathbb{N}$, we denote that $f$ is in this set as ``$f(n) = O(g(n))$''. We say that $g$ is an \textit{asymptotic upper bound} for $f$.
+\end{definition}
+
+
+\vspace{-2mm}
+\begin{definition}
+    Let $g$ be a function defined in $\mathbb{N}$. We denote $\Omega(g(n))$ the set of functions defined by:
+    \vspace{-6mm}
+
+\begin{align*}
+    \Omega(g(n)) = \{ f(n): \; &\exists c \in \mathbb{R}^+, \; \textrm{and} \; n_0 \in \mathbb{N} \;\textrm{such that}\\ 
+                               &0 \leq c g(n) \leq f(n), \; \forall n \geq n_0 \}.
+\end{align*} 
+
+    If $f$ is another function taking values in $\mathbb{N}$, we denote that $f$ is in this set as ``$f(n) = \Omega(g(n))$''. We say that $g$ is an \textit{asymptotic lower bound} for $f$.
+\end{definition}
+
+
+Note from the above definitions that for any function $g$, we have:
+$$
+    \Omega(g(n)) \subseteq \Theta(g(n)) \subseteq O(g(n)).
+$$
+
+\begin{theorem} 
+    For any two functions $f$ and $g$, we have $f(n) = \Theta(g(n))$ if  and only if $f(n) = O(g(n))$ and $f(n) = \Omega(g(n))$.
+\end{theorem}
+
+
+    \paragraph{Asymptotic notation in equations and inequalities.} When using asymptotic notation in formulas, we interpret it as standing for some anonymous function that we do not to care. For example, $2n^2 + 3n + 1 = 2n^2 + \Theta(n)$ means that $2n^2 + 3n + 1 = 2n^2 + f(n)$, for some function $f$ in the set $\Theta(n)$ (In this case $f(n) = 3n + 1$ which is indeed $\Theta(n)$).
+
+    Using asymptotic notation in this manner we can help eliminate inessential detail and clutter in an equation. For example in merge sort recurrence: $T(n) = 2T(n/2) + \Theta(n)$. If we are interested only in the asymptotic behavoir of $T(n)$, there is no point in specifying all the lower-order terms exactly; they are all understood to be included in the anonymous function denoted by the term $\Theta(n)$.
+
+    The number of anonymous functions in an expression is understood to be equal to the number of times the asymptotic notation appears. In some cases, asymptotic notation appears on the left-hand side of an equation, like: $2n^2 + \Theta(n) = \Theta(n^2)$.
+    We interpret it using the rule: \textit{No matter how the anonymous functions are chosen on the left hand of the equals sign, there is a way to choose the anonymous function on the right of the equal sign to make the equation valid.}
+    Thus on our example, $\forall f \in \Theta(n)$, $\exists g \in \Theta(n ^2)$ such that $2n ^2 + f(n) = g(n), \forall n$.
+
+    \paragraph{Asymptotically tight bounds.} The asymptotic upper bound provided by $O$-notation may or may not be asymptotically tight. For example $2n^2 + 3 = O(n^2)$ is asymptotically tight, but $n = O(n^2)$ isn't. We use $o$-notation to denote an upper bound that is not asymptotically tight.
+
+\begin{definition}
+    We denote $o(g(n))$ the set of functions defined by:
+    \vspace{-6mm}
+
+\begin{align*}
+    o(g(n)) = \{ f(n): \; &\forall c > 0, \; \exists n_0 \in \mathbb{N} \;\textrm{such that}\\ 
+                          &0 \leq f(n) < cg(n), \; \forall n \geq n_0 \}.
+\end{align*} 
+\end{definition}
+
+That is equivalent to say that if $f(n) = o(g(n))$ if, and only if, $\lim_{n\rightarrow\infty} f(n)/g(n) = 0$. \\
+
+By analogy we have lower bound that are not asymptotically tight.
+
+\begin{definition}
+    We denote $\omega(g(n))$ the set of functions defined by:
+    \vspace{-6mm}
+
+\begin{align*}
+    \omega(g(n)) = \{ f(n): \; &\forall c > 0, \; \exists n_0 \in \mathbb{N} \;\textrm{such that}\\ 
+                          &0 \leq cg(f < f(n), \; \forall n \geq n_0 \}.
+\end{align*} 
+\end{definition}
+
+That is equivalent to say that if $f(n) = \omega(g(n))$ if, and only if, $\lim_{n\rightarrow\infty} f(n)/g(n) = \infty$.
+
+
+\subsubsection{Comparing Functions}
+Many of the relational properties of real numbers apply to asymptotic comparisons as well. For the following assume $f, g$ be asymptotically positive functions.
+
+\paragraph{Symmetry:}
+\begin{enumerate}[label=\roman*)]
+    \item $f(n) = \Theta(g(n))$ $\iff$ $g(n) = \Theta(f(n))$.
+\end{enumerate}
+\paragraph{Reflexivity:}
+\begin{enumerate}[label=\roman*)]
+    \item $f(n) = \Theta(f(n))$.
+    \item $f(n) = O(f(n))$.
+    \item $f(n) = \Omega(f(n))$.
+\end{enumerate}
+\paragraph{Transitivity:}
+\begin{enumerate}[label=\roman*)]
+    \item $f(n) = \Theta(g(n))$ and $g(n) = \Theta(h(n))$ $\implies$ $f(n) = \Theta(h(n))$.
+    \item $f(n) = O(g(n))$ and $g(n) = O(h(n))$ $\implies$ $f(n) = O(h(n))$.
+    \item $f(n) = \Omega(g(n))$ and $g(n) = \Omega(h(n))$ $\implies$ $f(n) = \Omega(h(n))$.
+    \item $f(n) = o(g(n))$ and $g(n) = o(h(n))$ $\implies$ $f(n) = o(h(n))$.
+    \item $f(n) = \omega(g(n))$ and $g(n) = \omega(h(n))$ $\implies$ $f(n) = \omega(h(n))$.
+\end{enumerate}
+\paragraph{Transpose Symmetry:}
+\begin{enumerate}[label=\roman*)]
+    \item $f(n) = O(g(n))$ $\iff$ $g(n) = \Omega(f(n))$.
+    \item $f(n) = o(g(n))$ $\iff$ $g(n) = \omega(f(n))$.
+\end{enumerate}
+
+We have an analogy between asymptotic comparisons of two functions and the comparisons of two real numbers. For example $f(n) = O(g(n))$ is like $a \leq b$; also $\Omega(\cdot)$ like $\geq$, $\Theta(\cdot)$ like $=$, $o(\cdot)$ like $<$, $\omega(\cdot)$ like $>$.
+
+\begin{remark}
+    If we define the relation $f(n) \sim g(n)$ if, and only if, $f(n) = \Theta(g(n))$, then this relation is an equivalence relation.
+\end{remark}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{multicols*}
