@@ -1,0 +1,46 @@
+\newpage 
+
+\begin{multicols*}{2}
+[\section{Divide And Conquer}]
+
+In divide-and-conquer, we solve a problem recursively, applying three steps at each level of the recursion:
+\begin{itemize}
+        \item \textbf{Divide} the problem into a number of subproblems that are smaller instances of the same problem.
+        \item \textbf{Conquer} the subproblems by solveing them recursively. If the subproblem sizes are small enough, just solve them i a straightforward manner.
+        \item \textbf{Combine} the solutions to the subproblems into the solution for the original problem.
+\end{itemize}
+
+    When the subproblems are large enough to solve recursively, we call that the \textit{recursive case}. Once the problems become small enough that we no longer recurse, we say that the recursion ``bottoms out'' and that we have gotten down to the \textit{base case}. Sometimes, in addition to ubproblems that are smaller instances of the same problem, we have to solve subproblems that are NOT quite the same as the original problem, and cconsider solvim that problem part of the combine step.
+
+\stepcounter{subsection} % \subsection{The Maximum Subarray Problem}
+\stepcounter{subsection} % \subsection{Strassen's Algorithm for Matrix Multiplication}
+
+\subsection{The substitution method for solving recurrences}
+The \textit{substitution method} for solving recurrences comprises two steps:
+
+\begin{enumerate}
+    \item Guess the form of the solution.
+    \item Use the Principle of Mathematical Induction to find the constants and show that the solution works.
+\end{enumerate}
+
+
+    We can use the substitution method to establish either upper or lower bounds on a recurrence. As an example consider the recurrence given by: $T(n) = 2T(\lfloor n/2 \rfloor) + n$. We guess that the solution is $T(n) = O(n\log{n})$. We need to see that $T(n) \leq cn\log{n}$ for some $c > 0$, for all $n > n_0 \in \mathbb{N}$.
+    We start by assuming that the bound holds for all positive $m < n$, in particular for $m = \lfloor n/2 \rfloor$, yielding $T(\lfloor n/2 \rfloor ) \leq c \lfloor n/2 \rfloor \log(\lfloor n/2\rfloor)$. And substituting into the recurrence yields:
+
+    \vspace{-6mm}
+\begin{align*}
+    T(n) &\leq 2(c \lfloor n/2 \rfloor \log(\lfloor n/2\rfloor)) + n \leq cn\log(n/2) + n \\
+         &= cn\log{n} + (1 - c\log{2}) n \leq cn\log{n},
+\end{align*}
+    where the last inequality holds iff $c \geq 1/\log{2}$. To complete the proof we need to check that our solution holds for a base case. That is, we need to show in our case, that we can choose $c$ great enough so that the bound holds for the base case too. 
+
+    This requeriment may lead to problems sometimes. Assume for the sake of the argument that $T(1) = 1$, then the bound $T(n) \leq cn\log{n}$ yields to $T(1) \leq c \cdot 1 \cdot \log{1} = 0$ !!
+    We can overcome this by taking advantage of asymptotic definition, requiring us that the bound holds for $n \geq n_0$, for some $n_0 \in \mathbb{N}$.
+
+
+
+
+
+
+
+\end{multicols*}
