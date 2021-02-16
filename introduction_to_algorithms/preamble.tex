@@ -27,7 +27,14 @@
 \usepackage{fvextra}
 
 \usepackage{amsmath}     % mathematics symbols
-\usepackage{amsfonts}     % mathematics fonts
+\usepackage{amsfonts}    % mathematics fonts
+\usepackage{amssymb}
+
+\usepackage{tikz}        % drawings
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{matrix}
+\usetikzlibrary{decorations.pathreplacing}
+
 
 
 
@@ -120,6 +127,7 @@
     \vspace{2mm}%
 }
 
+
 \newenvironment{remark}
 {%
     \vspace{2mm}%
@@ -128,6 +136,7 @@
 {%
     \vspace{2mm}%
 }
+
 
 \newtheorem{atheorem}{Theorem}[section]
 
@@ -138,4 +147,14 @@
 }
 {%
     \end{atheorem}
+}
+
+
+\newenvironment{theoremnamed}[1]
+{%
+    \begin{theorem}
+    \textbf{(#1)}
+}
+{%
+    \end{theorem}
 }
