@@ -274,6 +274,8 @@ In \textit{hierarchical paging}, we page the page table, and each page number is
 This solution is unfeasable for a 64-biit logical address space system, since we would end with an outer page index $p_1$ of 42 bytes. This index could be further divided into a 2nd outer page and and an outer page offset. This 2nd outer page index would still be too big (32-bits), which may need further paging... Thus leading to highly nested hierarchichal pages, which is inappropriate.
 
 
+\subsubsection{Hashed Tables}
+A common approach for handling address spaces larger than 32 bits is to use a \textit{hashed page table}, with the hash value being the virtual page number.
 
 
 
