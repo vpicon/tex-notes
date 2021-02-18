@@ -1,0 +1,33 @@
+\newpage 
+
+\begin{multicols*}{2}
+[\section{Probabilistic Analysis and Randomized Algorithms}]
+
+\subsection{The hiring problem}
+
+    Suppose we need to hire an office assistant. You interview a person and decide to hire that person or not, and we must pay the employment agency a fee for interviewing the person ($c_i$). To actually hire the applicant we must pay a higher cost ($c_h$), since we must fire the current office assistant. So after each interview, if the new applicant is better than the current office assistant, we fire the office assistant and hire the new applicant.  We wish to estimate what the price of this strategy will be.
+
+    The following \procedure{Hire-Assistant}, expresses this strategy for hiring among $n$ applicants.
+
+
+\begin{pseudocode}{Hire-Assistant}{n}
+    \STATE $best = 0$ ~~  \COMMENT{Actual best candidate.}
+    \FOR{$i = 1$ \TO $n$}
+        \STATE interview candidate $i$
+        \IF{candidate $i$ is better than candidate $best$}
+            \STATE $best = i$
+            \STATE hire candidate $i$
+        \ENDIF
+    \ENDFOR
+\end{pseudocode}
+
+
+    \vspace{3mm}The cost model for this problem differs from the model described in previous chapters. We focus not on the running time, but on the costs incurred by the interviewing and hiring. Interviewing has a low cost $c_i$, and hiring an expensive cost $c_h$. Let $m$ be the number of applicants hired during the strategy, the total cost associated with this algorithm is $O(c_i n + c_h m)$. No matter how many people we hire, we always interview $n$ candidates and thus always incur the cost $c_i n$ associated with interviewing. We therefore concentrate on analyzing $c_h m$, the hiring cost. Here the quantity $m$ \underline{varies with each run of the algorithm}. 
+
+    In the worst case, candidates are in increasing order of quality, thus we hire all $n$ candidates. However, candidates do not always come in this order, nor we know or control the order they come in. Thus it is natural to ask what we expect to happen in an \underline{average case}.
+
+    \paragraph{Probabilistic analysis} \textit{Probabilistic analysis} is the use of probability in the analysis of problems. Mos commonly we used to analyze the running time of algorithms. In order to perform a probabilistic analysis, we must use knowledge of, or make assumptions about the sitribution of the input. When we analyze our algorithm, computing an average-casea running time, where we take the average over the distribution of the possible inputs (we take the expected value).
+
+
+
+\end{multicols*}

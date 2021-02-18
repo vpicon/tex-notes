@@ -24,7 +24,7 @@ The \textit{substitution method} for solving recurrences comprises two steps:
 \end{enumerate}
 
 
-    We can use the substitution method to establish either upper or lower bounds on a recurrence. As an example consider the recurrence given by: $T(n) = 2T(\lfloor n/2 \rfloor) + n$. We guess that the solution is $T(n) = O(n\log{n})$. So, we claim that $T(n) \leq cn\log{n}$ for some $c > $.
+    We can use the substitution method to establish either upper or lower bounds on a recurrence. As an example consider the recurrence given by: $T(n) = 2T(\lfloor n/2 \rfloor) + n$. We guess that the solution is $T(n) = O(n\log{n})$. So, we claim that $T(n) \leq cn\log{n}$, for some $c > 0$. Proving the claim would then imply that $T(n) = O(n\log{n})$.
     Using induction, we start by assuming that the bound holds for all positive $m < n$, in particular for $m = \lfloor n/2 \rfloor$, yielding $T(\lfloor n/2 \rfloor ) \leq c \lfloor n/2 \rfloor \log(\lfloor n/2\rfloor)$. And substituting into the recurrence yields:
 
 \vspace{-6mm}
