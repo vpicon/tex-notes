@@ -1,11 +1,19 @@
 \documentclass[10pt]{article}
-\usepackage[utf8]{inputenc}
 
 
-\input{preamble.tex}
+% Set title name
+\newcommand{\titlename}{Introduction To Algorithms}
+
+% Import preamble documents
+\input{../preamble_meta.tex}  % Metadata
+\input{../preamble_cs.tex}    % Computer Science 
+\input{../preamble_math.tex}  % Mathematics
+\input{preamble.tex}          % Project Specific
+
 
 \begin{document}
      
+    \stepcounter{section}          % Skip chapter 1
     \input{chapters/chapter2.tex}
     \input{chapters/chapter3.tex}
     \input{chapters/chapter4.tex}

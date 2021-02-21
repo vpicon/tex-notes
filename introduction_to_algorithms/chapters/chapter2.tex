@@ -1,7 +1,4 @@
-\newpage 
-
-\begin{multicols*}{2}
-[\section{Getting Started}]
+\begin{mysection}{Getting Started}
 
 \subsection{Insertion Sort}
     \paragraph{Sorting problem:} Given a sequence of $n$ numbers $(a_1, a_2, \dotsc, a_n)$, produce a premutation $(a'_1, a'_2, \dotsc, a'_n)$ of the input sequence such that $a'_1 \leq a'_2 \leq \dotsb \leq a'_n$.
@@ -136,7 +133,7 @@ The \procedure{Merge-Sort} algorithm follows this divide-and-conquer approach:
 
 \begin{pseudocode}{Merge-Sort}{A, p, r}
     \IF{$p < r$}
-        \STATE $q = \lfloor(p + r)/2\rfloor$
+        \STATE $q = \floorfunc{(p + r)/2}$
         \STATE \procedure{Merge-Sort}$(A, p, q)$
         \STATE \procedure{Merge-Sort}$(A, q + 1, r)$
         \STATE \procedure{Merge}$(A, p, q, r)$
@@ -162,4 +159,4 @@ In later chapters we will solve the recurrence using the Master Theorem.
 
 
 
-\end{multicols*}
+\end{mysection}

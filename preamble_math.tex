@@ -1,0 +1,92 @@
+% ----- PACKAGES -----
+
+\usepackage{amsfonts}    % mathematics fonts
+\usepackage{amssymb}
+\usepackage{bbm}         % mathematics fonts for digits
+
+
+
+
+% ----- MACROS AND COMMANDS -----
+
+% Basic Math functions written as combination of symbols
+\newcommand{\floorfunc}[1]{\left\lfloor {#1} \right\rfloor}
+\newcommand{\ceilfunc}[1]{\left\lceil {#1} \right\rceil}
+\newcommand{\absolute}[1]{\lvert {#1} \rvert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+% Probability Theory
+\newcommand{\expectation}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\indicator}[1]{\mathbbm{1}_{#1}}  % Indicator random variable or function
+
+% Redefine empty set symbol
+\let\oldemptyset\emptyset 
+\let\emptyset\varnothing
+
+
+
+
+% ----- ENVIRONMENTS -----
+
+\newenvironment{definition}
+{%
+    \vspace*{3mm}%
+    \noindent\textbf{Definition.}\normalshape}
+{%
+}
+
+
+\newenvironment{remark}
+{%
+    \vspace{3mm}%
+    \noindent\textbf{Remark.}\hspace{0mm}}
+{%
+}
+
+
+\newenvironment{lemma}
+{%
+    \vspace{3mm}%
+    \noindent\textbf{Lemma.}\hspace{0mm}\itshape}
+{%
+}
+
+
+\newenvironment{proposition}
+{%
+    \vspace{3mm}%
+    \noindent\textbf{Proposition.}\hspace{1mm}\itshape}
+{%
+}
+
+
+\newtheorem{atheorem}{Theorem}[section]
+
+\newenvironment{theorem}
+{%
+    \begin{atheorem}
+}
+{%
+    \end{atheorem}
+}
+
+
+\newenvironment{theoremnamed}[1]
+{%
+    \begin{theorem}
+    \textbf{(#1).}
+}
+{%
+    \end{theorem}
+}
+
+
+\newenvironment{proof}
+{%
+    \newline
+    \noindent\textit{Proof:} ~ \hspace{0mm}}
+{%
+    \hspace*{\fill}${\tiny\blacksquare}$
+    \vspace{2mm}%
+}

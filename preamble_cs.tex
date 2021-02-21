@@ -1,34 +1,14 @@
 % ----- PACKAGES -----
 
-\usepackage{algorithm}     % algorithms and pseudocode environments
+\usepackage{minted}       % computer code displayer
+
+\usepackage{algorithm}    % algorithms and pseudocode environments
 \usepackage{algorithmic}   
 \algsetup{
     indent=2em,
     linenodelimiter=\ ,
     linenosize=\small
 }
-
-% ----- DOCUMENT STRUCTURE -----
-
-\pagenumbering{gobble}  % No page numbers
-
-\pagestyle{fancy}       % Header format
-\fancyhf{}
-\lhead{\textbf{Introduction To Algorithms}}
-\rhead{\date{\today}}
-
-\titleformat{\section}[block]  % Section Titles format
-  {\bf\Large\centering}{Chapter \thesection}{1em}{#1}
-
-\setcounter{section}{1}      % Start counting at section 2
-
-\setcounter{secnumdepth}{3}  % Allow subsubsections
-
-% Align lengths
-\setlength{\abovedisplayskip}{-5pt}%
-\setlength{\belowdisplayskip}{-5pt}%
-\setlength{\abovedisplayshortskip}{-5pt}%
-\setlength{\belowdisplayshortskip}{-5pt}%
 
 
 % ----- MACROS AND COMMANDS -----
@@ -42,7 +22,6 @@
 
 
 % ----- ENVIRONMENTS -----
-
 
 \newenvironment{code} 
 {%
