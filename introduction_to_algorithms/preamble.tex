@@ -29,6 +29,7 @@
 \usepackage{amsmath}     % mathematics symbols
 \usepackage{amsfonts}    % mathematics fonts
 \usepackage{amssymb}
+\usepackage{bbm}         % mathematics fonts for digits
 
 \usepackage{tikz}        % drawings
 \usetikzlibrary{shapes.geometric}
@@ -79,6 +80,13 @@
 \newcommand{\tip}{\textit{\textsc{Tip}}}
 \newcommand{\procedure}[1]{\textsc{#1}}
 
+% Math Operators and Functions
+\newcommand{\expectation}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\prob}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\indicator}[1]{\mathbbm{1}_{#1}}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
 
 
 % ----- ENVIRONMENTS -----
@@ -108,12 +116,10 @@
 {%
     \vspace{2mm}%
     \noindent\textsc{#1}{$(#2)$}
-    \begin{centering}%
     \begin{algorithmic}[1]%
 }
 {%
     \end{algorithmic}%
-    \end{centering}%
     \vspace{-2mm}%
 }
 
@@ -132,6 +138,26 @@
 {%
     \vspace{2mm}%
     \noindent\textbf{Remark}\hspace{0mm}
+}
+{%
+    \vspace{2mm}%
+}
+
+
+\newenvironment{lemma}
+{%
+    \vspace{2mm}%
+    \noindent\textbf{Lemma}\hspace{0mm}
+}
+{%
+    \vspace{2mm}%
+}
+
+
+\newenvironment{proposition}
+{%
+    \vspace{4mm}%
+    \noindent\textbf{Proposition}\hspace{0mm}
 }
 {%
     \vspace{2mm}%
@@ -157,4 +183,16 @@
 }
 {%
     \end{theorem}
+}
+
+
+
+\newenvironment{proof}
+{%
+    \newline
+    \noindent\textit{Proof} ~ \hspace{0mm}
+}
+{%
+    \hspace*{\fill}${\tiny\blacksquare}$
+    \vspace{2mm}%
 }

@@ -26,7 +26,133 @@
 
     In the worst case, candidates are in increasing order of quality, thus we hire all $n$ candidates. However, candidates do not always come in this order, nor we know or control the order they come in. Thus it is natural to ask what we expect to happen in an \underline{average case}.
 
-    \paragraph{Probabilistic analysis} \textit{Probabilistic analysis} is the use of probability in the analysis of problems. Mos commonly we used to analyze the running time of algorithms. In order to perform a probabilistic analysis, we must use knowledge of, or make assumptions about the sitribution of the input. When we analyze our algorithm, computing an average-casea running time, where we take the average over the distribution of the possible inputs (we take the expected value).
+    \paragraph{Probabilistic analysis} \textit{Probabilistic analysis} is the use of probability in the analysis of problems. Most commonly we use  it to analyze the running time of algorithms. In order to perform a probabilistic analysis, we must use knowledge of, or make assumptions about the sitribution of the input. When we analyze our algorithm, computing an \textit{average-case running time}, where we take the average over the distribution of the possible inputs (we take the expected value). 
+
+    For the hiring problem we can assume that the applicants come in a random order, and that between any two candidates we can decide which one is better (that is there is a \textit{total ordering}). Thus we can rank each applicant with an integer from $1$ to $n$, denoting $rank(i)$ the rank of applicant $i$ (where the highest rank yields the best applicant). So we have that the list of ranks $(rank(1), rank(2), \dotsc, rank(n))$ is a permutation of the list $(1, 2, \dotsc, n)$. Assumin random ordering in the applicants, we can say that the list of ranks is equally likely to be one of the $n!$ permutations of $[n]$ (the ranks form a \textit{uniform random permutation}).
+
+    \paragraph{Randomized Algorithms} In the hiring problem, we assumed that the applicants come in order. Insted we can change a bit the model and say we have a list of $n$ candidates, and on each day we \underline{choose randomly} which candidate to interview. So we have gained control of the process and \underline{enforced a random order}. 
+
+    More generally, we call an algorithm \textit{randomized} if its behavior is determined not only by its input but also by values produced by a \textit{random number generator}. Assume we have a random number generator \procedure{Random}$(a, b)$ which models a discrete uniform random variable $U(a, b)$. When analyzing the running time of a randomized algorithm we take the expected value of the running time over the distribution of values returned by the random number generator.
+
+
+
+\subsection{Indicator random variables}
+
+    Indicator rrandom variables provide a convenient method for converting between probabilities and expectations. Suppose we are given a sample space $S$ and an event $A \subseteq S$. Then the \textit{indicator random variable} $\indicator{A}$ associated with event $A$ is definde as
+\[
+    \indicator{A}(\omega) = 
+    \begin{cases}
+        1  &\textrm{if} \; w \in A, \\
+        0  &\textrm{otherwise}. \\
+    \end{cases}
+\]
+
+
+\begin{lemma}
+    Given a sample space $S$ and an event $A \subseteq S$, let $\indicator{A}$ be the indicator variable of the event $A$. Then $\expectation{\indicator{A}} = \prob{A}$.
+\end{lemma}
+
+
+As an example, return to the hiring problem. Let $X$ be te random variable whose value equals he number of times we hire a new office assistant. Now let $X_i$ be the indicator random variable associated with the event in which candidate $i$ is hired. Thus, we have 
+
+\[
+    X_i = 
+    \begin{cases}
+        1  &\textrm{if candidate} \; i \; \textrm{is hired}, \\
+        0  &\textrm{otherwise}. \\
+    \end{cases}
+\]
+
+Then the key step is to realize that $X = \sum_{i = 1}^n X_i$. Now to calculate $\prob{\textrm{candidate}\;i\;\textrm{is hired}}$, we have in our strategy that candidate $i$ is hired iff it is better than all the prior $1, \dotsc, i - 1$ candidates. Because we have assumed that the candidates arrive in a random order, the first $i$ candidates are in random order. So any of the first $i$ candidates could be the best-qualified so far. Thus candidate $i$ has a probability of $1/i$ of being better qualified than the candidates $1$ through $i - 1$. Hence $\expectation{X_i} = 1/i$. Now we can compute $\expectation{X}$.
+\begin{align*}
+    \expectation{X} &= \expectation{\sum_{i = 1}^n X_i} = \sum_{i = 1}^n \expectation{X_i} = \sum_{i = 1}^n \frac{1}{i} = \ln{n} + O(1).
+\end{align*}
+
+Thus, although we interview $n$ people, we actually only hire aroung $\ln{n}$ of them on average. So we can conclude that if the candidates are presented in random order, the \procedure{Hire-Assistant} algorithm has an average-case total hiring cost of $O(c_h \ln{n})$.
+
+
+
+\subsection{Randomized algorithms}
+In the previous section we showed how knowing the distribution on the inputs can help us analyze the average-case behavior of an algorithm. Many times, we do not have such knowledge, thus precluding the average-case analysis. As mentioned, we may be able to use a randomized algorithm. In these cases we can use a randomized algorithm and force a random distribution.\\
+
+
+In the hiring problem, we assumed a random order on inputs. We can instead, impose a distribution on the inputs. For example, before running the alorithm, randomly permute the candidates in order to enforce  the property that every permutation is equally likely. Although we have modified the algorithm, we still expect to hire a new office assistant approximately $\ln{n}$ times. But now we expect this to be the case \underline{for any input}, rather than for inputs drawn from a particular distribution. For our hiring strategy, to produced our randomized algorithm we can do the following.
+
+
+\begin{pseudocode}{Randomized-Hire-Assistant}{n}
+    \STATE randomly permute the list of candidates
+    \STATE $best = 0$ ~~  \COMMENT{Actual best candidate.}
+    \FOR{$i = 1$ \TO $n$}
+        \STATE interview candidate $i$
+        \IF{candidate $i$ is better than candidate $best$}
+            \STATE $best = i$
+            \STATE hire candidate $i$
+        \ENDIF
+    \ENDFOR
+\end{pseudocode}
+
+\vspace{3mm}With this simple change we have created a randomized algorithm whose performance matches the obtained by assuming that the candidates were presented ina  random order. The \underline{expected} hiring cost of the procedure \procedure{Randomized-Hire-Assistant} is $O(c_h \ln{n})$.
+
+
+\subsubsection{Randomly permuting arrays}
+Many randomized algorihtms randomize the input by permuting an array. We study two algorithms for doing this. Suppose we are given an array $A$ of $n$ elements, without loss of generality, containing elements $1$ through $n$. Our goal is to produce a random permutation of the array. \\
+
+In the first method, we create an array $P$ of $n$ random elements, then sort $A$ as in the order of $P$.
+
+
+\begin{pseudocode}{Permute-By-Sorting}{A}
+    \STATE $n = A.length$
+    \STATE let $P[1..n]$ be a new array
+    \FOR{$i = 1$ \TO $n$}
+        \STATE $P[i] = \procedure{Random}(1, n^3)$
+    \ENDFOR
+    \STATE sort $A$, using $P$ as sort keys
+\end{pseudocode}
+
+\vspace{3mm}In line $4$ we take a random number between $1$ and $n^3$. With this range we make it likely that all the priorities in $P$ are unique (it is easily seen that the probability that all entries are unique is at least $1 - 1/n$, and the algorithm can be implemented even if there are repetitions).Assume nevertheless, that priorities in $P$ are unique.
+
+The costly step comes in line $6$ for sorting the array $A$. We will see this comparison sort can be done in $\Omega(n\log{n})$ time. After this sort, if $P[i]$ is the $j$th smallest priority, then $A[i]$ lies in position $j$ of the output. In this manner we obtain a permutation of $A$.
+
+\begin{proposition}
+    Procedure \procedure{Permute-By-Sorting} produces a uniform random permutation of the input, assuming that all the priorities are distinct.
+\end{proposition}
+
+A better method for generating a random permutation is to permute the given array in place. The following procedure does so \underline{in $O(n)$ time}.
+
+
+\begin{pseudocode}{Permute-In-Place}{A}
+    \STATE $n = A.length$
+    \FOR{$i = 1$ \TO $n$}
+        \STATE swap $A[i]$ with $A[\procedure{Random}(i, n)]$
+    \ENDFOR
+\end{pseudocode}
+
+\vspace{3mm}We shall use a loop invariant to show that the procedure produces a uniform random permutation.
+
+\begin{proposition}
+    Procedure \procedure{Permute-In-Place} produces a uniform random permutation of the input.
+\end{proposition}
+\begin{proof}
+    We will use the following loop invariant: \textit{Just prior to the $i$th iteration of the loop in lines 2 and 3, fo each possible $(i-1)$-permutation of the $n$ elements, the subarray $A[1..i - 1]$ contains this $(i - 1)$-permutation with probability $(n - i + 1)!/n!$.} 
+
+    We need to see the invariant holds prior to every loop iteration. And use the loop invariant to show correctness at loop termination.
+
+    \vspace{3mm}
+    \indent\textbf{Initialization:} Before the first loop, at $i = 1$, the loop invariant says for each $0$-permutation, the subarray $A[1..0] = \emptyset$, contains this 0-permutation with probability $n!/n! = 1$. Which holds trivially.\\
+
+
+    \indent\textbf{Maintenance:} Assume that just before the $i$th iteration, each possible $(i - 1)$-permutation appears in the subarray $A[1..i - 1]$ with probability $(n - i + 1)!/n!$. We shall see, that after the $i$th iteration, each possible $i$-permutation appears in the subarray $A[1..i]$ with probability $(n-i)!/n!$.
+
+    Consider any $i$-permutation $(x_1, x_2, \dotsc, x_i)$, which is an $(i - 1)$-permutation $(x_1, x_2, \dotsc, x_{i - 1})$, followed by an $x_i$ placed in $A[i]$ by the algorithm. Let $E_1$ denote the event in which the first $i - 1$ iterations have created the particular $(i - 1)$-permutation $(x_1, \dotsc, x_{i - 1})$  in $A[1..i - 1]$; which by the loop invariant has $\prob{E_1} = (n - i + 1)!/n!$. Let $E_2$ be the event that the $i$th iteration puts $x_i$ in $A[i]$. The $i$-permutation $(x1, \dotsc, x_i)$ appears in $A[1..i]$, precisely when both $E_1$ and $E_2$ occur, that is the event $E_1 \cap E_2$. Now we have $\prob{E_1 \cap E_2} = \prob{E_2 | E_1} \prob{E_1}$.
+
+    The probability $\prob{E_2 | E_1}$ equals $1/(n - i + 1)$, which is choosing randomly $x_i$ from the array $A[i..n]$. Thus we have
+\[
+    \prob{E_1 \cap E_2} = \frac{1}{n - i + 1} \frac{(n - i + 1)!}{n!} = \frac{(n - i)!}{n!}.
+\]
+    \indent\textbf{Termination:} At termination, $i = n + 1$, hence the subarray $A[1..n]$ is a given $n$-permutation with probability $(n - (n + 1)+1)!/n! = 0!/n! = 1/n!$. \\
+
+    Thus, \procedure{Randomize-In-Place} produces a uniform random permutation.
+\end{proof}
 
 
 
