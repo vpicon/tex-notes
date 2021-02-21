@@ -1,0 +1,68 @@
+% ----- PACKAGES -----
+
+\usepackage{algorithm}     % algorithms and pseudocode environments
+\usepackage{algorithmic}   
+\algsetup{
+    indent=2em,
+    linenodelimiter=\ ,
+    linenosize=\small
+}
+
+% ----- DOCUMENT STRUCTURE -----
+
+\pagenumbering{gobble}  % No page numbers
+
+\pagestyle{fancy}       % Header format
+\fancyhf{}
+\lhead{\textbf{Introduction To Algorithms}}
+\rhead{\date{\today}}
+
+\titleformat{\section}[block]  % Section Titles format
+  {\bf\Large\centering}{Chapter \thesection}{1em}{#1}
+
+\setcounter{section}{1}      % Start counting at section 2
+
+\setcounter{secnumdepth}{3}  % Allow subsubsections
+
+% Align lengths
+\setlength{\abovedisplayskip}{-5pt}%
+\setlength{\belowdisplayskip}{-5pt}%
+\setlength{\abovedisplayshortskip}{-5pt}%
+\setlength{\belowdisplayshortskip}{-5pt}%
+
+
+% ----- MACROS AND COMMANDS -----
+
+\newcommand{\tip}{\textit{\textsc{Tip}}}
+\newcommand{\procedure}[1]{\textsc{#1}}
+
+
+\renewcommand{\algorithmiccomment}[1]{\textbf{//} #1} % In algorithmic env
+\newcommand{\PROCEDURE}[1]{\textsc{#1}}
+
+
+% ----- ENVIRONMENTS -----
+
+
+\newenvironment{code} 
+{%
+    \vspace{-2mm}%
+    \VerbatimEnvironment%
+    \begin{minted}{c}%
+}
+{%
+    \end{minted}%
+    \vspace{-2mm}%
+}
+
+
+\newenvironment{pseudocode}[2]
+{%
+    \vspace{2mm}%
+    \noindent\textsc{#1}{$(#2)$}
+    \begin{algorithmic}[1]%
+}
+{%
+    \end{algorithmic}%
+    \vspace{-2mm}%
+}
