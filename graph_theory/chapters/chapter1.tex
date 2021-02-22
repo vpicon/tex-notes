@@ -48,7 +48,46 @@ If $G' \subseteq G$ and $G'$ contains all the edges $xy \in E$ with $x, y \in V'
 If $U$ is any set of vertices (usually of $G$), we write $G - U$ for $G\left[V \setminus U\right]$. In other words, $G - U$ is obtained from $G$ by deleting all the vertices in $U \cap V$ and their incident edges. We write $G - G'$ instead of $G - V(G')$. For $F \subseteq V \times V$ we write $G - F := (V, E \setminus F)$ and $G + F := (V, E \cup F)$. We call $G$ \concept{edge-maximal} with a given graph property if $G$ itself has the property but no graph $G + xy$ does, for non-adjacent vertices $x, y \in G$.
 \end{definition}
 
-\vspace{3mm} More generally, when we call a graph \concept{minimal} or \concept{maximal} with some property but have not specified any particular ordering, we are referring to the subgraph relation. When we speak of minimal or maximal sets of vertices or edges, the reference is simply to set inclusion.
+\begin{center}
+\begin{tikzpicture}
+    % Graph A
+    \node[simplenode] (A1) at (0, 0) {};
+    \node[simplenode] (A2) at (1, 0) {};
+    \node[simplenode] (A3) at (1, 1) {};
+    \node[simplenode] (A4) at (0, 1) {};
+    \node[simplenode] (A5) at (0.5, 0.5) {};
+
+    \draw[simpleline] (A1) -- (A2) node[below, midway, align=center,yshift=-2mm] {$G$};
+    \draw[simpleline] (A2) -- (A3) -- (A4) -- (A1);
+    \draw[simpleline] (A1) -- (A5) -- (A2);
+    \draw[simpleline] (A3) -- (A5) -- (A4);
+
+    % Graph B
+    \node[simplenode] (A1) at (2, 0) {};
+    \node[simplenode] (A2) at (3, 0) {};
+    \node[simplenode] (A3) at (3, 1) {};
+    \node[simplenode] (A4) at (2, 1) {};
+
+    \draw[simpleline] (A1) -- (A2) node[below, midway, align=center,yshift=-2mm] {$G'$};
+    \draw[simpleline] (A2) -- (A3) -- (A4) -- (A1);
+
+    % Graph C
+    \node[simplenode] (A1) at (4, 0) {};
+    \node[simplenode] (A2) at (5, 0) {};
+    \node[simplenode] (A3) at (5, 1) {};
+    \node[simplenode] (A4) at (4, 1) {};
+    \node[simplenode] (A5) at (4.5, 0.5) {};
+
+    \draw[simpleline] (A1) -- (A2) node[below, midway, align=center,yshift=-2mm] {$G''$};
+    \draw[simpleline] (A2) -- (A3) -- (A4) -- (A1);
+    \draw[simpleline] (A3) -- (A5);
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{-2mm} A graph $G$ with subgraphs $G'$ and $G''$: $G'$ is an induced subgraph of $G$, but $G''$ is not.\\
+
+More generally, when we call a graph \concept{minimal} or \concept{maximal} with some property but have not specified any particular ordering, we are referring to the subgraph relation. When we speak of minimal or maximal sets of vertices or edges, the reference is simply to set inclusion.
 
 \begin{definition}
 If $G$ and $G'$ are disjoint, we denote by $G \ast G'$ the graph obtained from $G \cup G'$ by joining all vertices of $G$ to all vertices of $G'$. The \concept{complement} $\overline{G}$ of $G$ is the graph on $V$ with edge set $V \times V \, \setminus E$. The \concept{line graph} $L(G)$ of $G$ is the graph on $E$ in which $x, y \in E$ are adjacent vertices if and only if they are adjacent edges in $G$.
@@ -82,6 +121,76 @@ Clearly we have that $\delta(G) \leq d(G) \leq \Delta(G)$. The average degree qu
 \begin{proposition}
 The number of vertices of odd degree in a graph is always even.
 \end{proposition}
+
+\vspace{3mm}
+If a graph has a large minimum degree (everywhere, locally, many edges per vertex) it also has many edges per vertex globally: $\varepsilon(G) = \frac{1}{2}d(G) \geq \frac{1}{2}\delta(G)$. Conversely its average degree may be large even with small minimum degree, in that case the vertices of large degree cannot be scattered among vertices of small degree, but concentrated in a region. Next proposition shows this region is a subgraph of $G$ with average degree no less than $G$ and minimum degree greater than half his average degree.
+
+\begin{proposition}
+Every graph $G$ with at least one edge, has a subgraph $H$ with $\delta(H) > \varepsilon(H) \geq \varepsilon(G)$.
+\end{proposition}
+
+
+\subsection{Paths and cycles}
+
+\vspace*{-3mm}
+\begin{definition}
+A \concept{path} is a non-empty graph $P = (V, E)$ of the form 
+\vspace{-2mm}
+\[
+    V = \{x_0, x_1, \dotsc, x_k\} ~~ E = \{x_0x_1, x_1x_2, \dotsc, x_{k-1}x_k\},
+\]
+where the $x_i$ are all distinct. Denote this path as $P = x_0 x_1 \dots x_k$, and call it a \concept{path from $x_0$ to $x_k$}. The vertices $x_0$ and $x_k$ are \concept{linked} by $P$ and are called its \concept{ends}; ther vertices $x_1, \dotsc, x_{k - 1}$ are the \concept{inner} vertices of $P$. The number of edges of a path is its \concept{length}, and the path of length $k$ is denoted by $P^k$ (where $P^0 = K^1$).
+
+We denote for $0 \leq i \leq j \leq k$ the following subpaths of $P$
+\vspace{-1mm}
+\begin{center}
+\begin{tabular}{ c c }
+    {
+        $\begin{aligned}
+            Px_i    &:= x_0 \dots x_i  \\  
+            x_iP    &:= x_i \dots x_k  \\  
+            x_iPx_j &:= x_i \dots x_j  \\  
+        \end{aligned}$
+    } 
+    &
+    {
+        $\begin{aligned}
+            \mathring{P} &:= x_1 \dots x_{k - 1} \\
+            P\mathring{x}_i &:= x_0 \dots x_{i - 1}          \\
+            \mathring{x}_iP &:= x_{i + 1} \dots x_k          \\
+            \mathring{x}_iP\mathring{x}_j &:= x_{i + 1} \dots x_{j - 1} \\  
+        \end{aligned}$
+    }
+\end{tabular}
+\end{center}
+We use similar intuitive notation for the concatenation of paths; for example: if the union $Px \cup xQy \cup yR$ of the three paths is again a path, we may simply write $PxQyR$.
+\end{definition}
+
+\begin{definition}
+    Given sets $A, B$ of vertices, we call $P = x_0 \dots x_k$ an \concept{$A$-$B$ path} if $V(P) \cap A = \{x_0\}$ and $V(P) \cap B = \{x_k\}$. Two or more paths are \concept{independent} if none of them contains an inner vertex of another.
+\end{definition}
+
+\begin{definition}
+Given a graph $H$, we call $P$ an \concept{$H$-path} if $P$ is non-trivial and meets $H$ exaclty in its ends. In particular, the edge of any $H$-path of length $1$ is never an edge of $H$.
+\end{definition}
+
+\begin{definition}
+If $P = x_0 \dots x_{k - 1}$  is a path and $k \geq 3$, then the graph $C := P + x_{k - 1}x_0$ is called a \concept{cycle} (denoted as $C = x_0 \dots x_{k - 1} x_0$). The \concept{length} of a cycle is its number of edges (or vertices); the cycle of length $k$ is called a $k$-cycle and denoted $C^k$.
+\end{definition}
+
+\begin{definition}
+The minimum length of a cycle (contained) in a graph $G$ is the \concept{girth} $g(G)$ of $G$; the maximum length of a cycle in $G$ is its \concept{circumference} (if $G$ does not contain a cycle, we set the former to $\infty$, the latter to zero). An edge which joins two vertices of a cycle but is not itself an edge of the cycle is a \concept{chord} of that cycle. Thus, an \concept{induced cycle in $G$}, a cycle in G forming an induced subgraph, is one that has no chords. 
+\end{definition}
+
+If a graph has large minimum degree, it contains long paths and cycles:
+
+\begin{proposition}
+Every graph $G$ with $\delta(G) \geq 2$ contains a path of length $\delta(G)$ and  a cycle of length at least $\delta(G) + 1$.
+\end{proposition}
+
+
+
+
 
 
 
