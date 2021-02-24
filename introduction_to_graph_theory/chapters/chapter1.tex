@@ -1,0 +1,50 @@
+\begin{mysection}{Fundamental Concepts}
+
+\subsection{What Is a Graph?}
+\vspace{-3mm}
+\begin{definition}
+    A \concept{graph} $G$ is a triple consisting a \concept{vertex set} $V(G)$, an \concept{edge set} $E(G)$, and a relation that associates with each edge two vertices (not necessarily distinct) called its \concept{endpoints}.
+\end{definition}
+
+\begin{definition}
+A \concept{loop} is an edge whose endpoints are equal. \concept{Multiple edges} are edges having the same pair of endpoints.
+
+A \concept{simple graph} is a graph having no loops or multiple edges. 
+
+    When $u$ and $v$ are endpoints of an edge, they are \concept{adjacent} and are \concept{neighbors}. We write $u \adjacent v$ for ``$u$ is adjacent to $v$''.
+\end{definition}
+
+\vspace{3mm}
+    We identify a simple graph by its vertex set and edge set, treating the edge set as a set of unordered pairs of vertices ($E \subseteq V \times V$) and writing $e = uv \,(= vu)$ for an edge $e$ with endpoints $u$ and $v$.
+
+The identification of a graph, would be insufficient for multigraphs and digraphs.
+
+\begin{definition}
+    The \concept{complement} $\overline{G}$ of a simple graph $G$ is the simple graph with vertex set $V(G)$ defined by $uv \in E\left({\overline{G}}\right)$ if and only if $uv \not\in E(G)$. A \concept{clique} in a graph is a set of pairwise adjacent vertices. An \concept{independet set} in a graph is a set of pairwise nonadjacent vertices.
+\end{definition}
+
+\begin{definition}
+        A graph $G$ is \concept{bipartite} if $V(G)$ is the union of two disjoint (possibly empty) independent sets called \concept{partites sets} of $G$.
+\end{definition}
+
+\begin{definition}
+    The \concept{chromatic number} of a graph $G$, written $\chi(G)$, is the minimum number of colors needed to label the vertices so that adjacent vertices receive different colors. A graph $G$ is $k$-\concept{partite} if $V(G)$ can be expressed as the union of $k$ (possibly empty) independent sets.
+\end{definition}
+
+\vspace{3mm}
+    This generalizes the idea of bipartite graphs, which are $2$-partite. Vertices given the same color must form an independent set, so $\chi(G)$ is the minimum number of independent sets needet to partition $V(G)$.
+
+\begin{definition}
+    A \concept{path} is a simple graph whose vertices can be ordered so that two vertices are adjacent if and only if they are consecutive in the list. A \concept{cycle} is a graph with an equal number of vertices and edges whose vertices can be placed around a circle so that two vertices are adjacent if and only if they appear consecutively along the circle.
+\end{definition}
+
+\begin{definition}
+    A graph $G$ is \concept{connected} if each pair of vertices $G$ belongs to a path; otherwise is \concept{disconnected}.
+\end{definition}
+
+\begin{definition}
+    A \concept{subgraph} of a graph $G$ is a graph $H$ such that $V(H) \subseteq V(G)$ and $E(H) \subseteq E(G)$, and the assignment of endpoints to edges in $H$ is the same as in $G$. We then can write $H \subseteq G$ and say that ``$G$ contains $H$''.
+\end{definition}
+
+
+\end{mysection}
