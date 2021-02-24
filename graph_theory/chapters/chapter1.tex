@@ -188,8 +188,67 @@ If a graph has large minimum degree, it contains long paths and cycles:
 Every graph $G$ with $\delta(G) \geq 2$ contains a path of length $\delta(G)$ and  a cycle of length at least $\delta(G) + 1$.
 \end{proposition}
 
+\begin{definition}
+The \concept{distance} $d_G(x, y)$ in $G$ of two vertices $x, y$ is the length of the shortest $x$-$y$ path in G; if no such path exists, we set $d(x, y) := \infty$. The greatest distance between any two vertices in $G$ is the \concept{diameter} of $G$, denoted $\diam G$.
+\end{definition}
+
+\begin{proposition}
+Every graph $G$ containing a cycle satisfies $g(G) \leq 2\diam G + 1$.
+\end{proposition}
+
+\begin{definition}
+A vertex is \concept{central} in $G$ if its greatest distance from any other vertex is as small as possible. This distance is the \concept{radius} of $G$ (denoted $\rad{G}$). Formally we have $\rad{G} = \min_{x \in V(G)} \max_{y \in V(G)} d_G (x, y)$. 
+\end{definition}
+
+\vspace{2mm}
+It is easy to check the following relation:
+\[
+    \rad{G} \leq \diam{G} \leq 2\rad{G}.
+\]
+Graphs of small diameter and maximum degree must be small:
+
+\begin{proposition}
+A graph $G$ of radius at most $k$ and maximum degree at most $d \geq 3$, has fewer than $\frac{d}{d - 2}(d - 1)^k$ vertices.
+\end{proposition}
 
 
+
+\subsection{Connectivity}
+\vspace{-3mm}
+\begin{definition}
+A non-empty graph $G$ is called \concept{connected} if any two of its vertices are linked by a path in $G$. If $U \subseteq V(G)$ and $G[U]$ is connected, we also call $U$ itself connecteed in $G$. Say a graph is \concept{disconnected} when it is not connected.
+\end{definition}
+
+\begin{proposition}
+Given a connected graph $G$, there exists an enumeration of its vertices, say $v_1, \dotsc, v_n$ such that $G_i := G[v_1, \dotsc, v_i]$ is connected for every $i$.
+\end{proposition}
+
+\begin{definition}
+Let $G = (V, E)$ a graph. A maximal connected subgraph f $G$ is called a \concept{component} of $G$. Note that a component, being connected, is always non-empty; the empty graph, therefore, has no components.
+
+If $A, B \subseteq V$ and $X \subseteq V \cup E$ are such that every $A$-$B$ path in $G$ contains a vertex or an edge from $X$, we say that $X$ \concept{separates} the sets $A$ and $B$ in $G$. Note that this implies $A \cap B \subseteq X$. More generally we say that $X$ \concept{separates} $G$ if $G - X$ is disconnected, that is, if $X$ separates in $G$ some two vertices that are not in $X$. A separating set of vertices is a \concept{separator}. A vertex which separates two other vertices of the same component is a \concept{cutvertex}, and an edge separating its ends is a \concept{bridge}. Thus, the bridges in a graph are precisely those edges that do not lie on any cycle.
+
+The unordered pair $\{A, B\}$ is a \concept{separation} of $G$ if $A \cup B = V$ and $G$ has no edge between $A \setminus B$ and $B \setminus A$. Clearly, the latter is equivalent to saying that $A \cap B$ separates $A$ from $B$. If both $A \setminus B$ and $B \setminus A$ are non-empty, the separation is \concept{proper}. The number $\absolute{A \cap B}$ is the \concept{order} of the separation $\{A, B\}$.
+\end{definition}
+
+\begin{definition}
+$G$ is called \concept{$k$-connected} (for $k \in \naturalset$) if $\absolute{G} > k$ and $G - X$ is connected for every set $X \subseteq V$ with $\absolute{X} < k$. In other words, no two vertices of $G$ are separated by fewer than $k$ other vertices. Every (non-empty) graph is $0$-connected, and the $1$-connected graphs are precisely the non-trivial connected graphs. 
+
+The greatest integer $k$ such that $G$ is $k$-connected is the \concept{connectivity} $\kappa(G)$ of $G$. Thus, $\kappa(G) = 0$ if and only if $G$ is disconnected or a $K^1$, and $\kappa(K^n) = n - 1$ for all $n \geq 1$.
+
+If $\absolute{G} > 1$ and $G - F$ is connected for every set $F \subseteq E$ of fewer than  edges, then $G$ is called \concept{$\ell$-edge-connected}. The greatest integer such that $G$ is $\ell$-edge-connected is the \concept{edge-connectivity} $\lambda(G)$ of $G$. In particular, we have $\lambda(G) = 0$ if $G$ is disconnected.
+\end{definition}
+
+\begin{proposition}
+If $G$ is non-trivial, then $\kappa(G) \leq \lambda(G) \leq \delta(G)$.
+\end{proposition}
+
+\begin{theorem}
+Let $0 \neq k \in \naturalset$. Every graph $G$ with $d(G) \geq 4k$ has a ($k + 1$)-connected subgraph $H$ such that $\varepsilon(G) > \varepsilon(G) - k$.
+\end{theorem}
+
+
+\subsection{Trees and forests}
 
 
 
