@@ -46,5 +46,58 @@ The identification of a graph, would be insufficient for multigraphs and digraph
     A \concept{subgraph} of a graph $G$ is a graph $H$ such that $V(H) \subseteq V(G)$ and $E(H) \subseteq E(G)$, and the assignment of endpoints to edges in $H$ is the same as in $G$. We then can write $H \subseteq G$ and say that ``$G$ contains $H$''.
 \end{definition}
 
+\begin{definition}
+    Let $G$ be a loopless graph with vertex set $V(G) = \{ v_1, \dotsc, v_n\}$ and edge set $E(G) = \{ e_1, \dotsc, e_m\}$. The \concept{adjacency matrix} of $G$, written $A(G)$, is the $n$-by-$n$ matrix in which entry $a_{i, j}$ is the number of edges in $G$ with endpoints $\{v_i, v_j\}$. The \concept{incidende matrix} $M(G)$ is the $n$-by-$m$ matrix in which entry $m_{i, j}$ is $1$ if $v_i$ is endpoint of $e_j$, otherwise is $0$.
+\end{definition}
+
+\begin{definition}
+    An \concept{isomorphism} from a simple graph $G$ to a simple graph $H$ is a bijection $f: V(G) \to V(H)$ such that $uv \in E(G)$ if and only if $f(u)f(v) \in E(H)$. We say $G$ is \concept{isomorphic} to $H$, written $G \simeq H$, if there is an isomorphism from $G$ to $H$.
+\end{definition}
+
+\begin{proposition}
+    The isomorphism relation is an equivalence relation on the set of simple graphs.
+\end{proposition}
+
+\vspace{3mm}
+When we name a graph  without naming its vertices, we often mean its isomorphism class. Technically ``$H$ is a subgraph of $G$'' means that some subgraph of $G$ is isomorphic to $H$.
+
+\begin{definition}
+    The path and cycle with $n$ vertices are denoted $P_n$ and $C_n$, respectively; an \concept{$n$-cycle} is a cycle with $n$ vertices. A \concept{complete graph} is a simple graph whose vertices are pairwise adjacent; the complete graph with $n$ vertices is denoted $K_n$. A \concept{complete bipartite graph} (or \concept{biclique}) is a simple bipartite graph such that two vertices are adjacent if and only if they are in different partite sets; when the sets have sizes $r$ ad $s$, the biclique is denoted $K_{r, s}$.
+\end{definition}
+
+\begin{remark}
+    The structural properties of a graph are determined by its adjacency relation, thus are preserved under isomorphisms. We can prove that $G$ and $H$ are \textit{not} isomorphic by finding some structural property in which they differ. 
+
+    On the other hand, we can not conclude two graphs are isomorphic by checking only adjacency properties. We must find such isomorphism $f: V(G) \to V(H)$.
+
+    Sometimes we can test isomorphism using the complements. Simple graphs $G$ and $H$ are isomorphic if and only if their complements $\overline{G}$ and $\overline{H}$ are isomorphic.
+\end{remark}
+
+\begin{definition}
+    A graph is \concept{self-complementary} if it is isomorphic to its complement. A \concept{decomposition} of a graph is a list of subgraphs such that each edge appears in exactly one subgraph in the list.
+\end{definition}
+
+\begin{remark}
+    An $n$-vertex graph $H$ is self-complementary if and only if $K_n$ has a decomposition consisting of two copies of $H$.
+\end{remark}
+
+\begin{definition}
+    The \concept{Petersen graph} is the simple graph whose vertices are the $2$-element subsets of a $5$-element set and whose edges are pairs of disjoint $2$-element subsets.
+\end{definition}
+
+\begin{proposition}
+    If two vertices are nonadjacent in the Petersen graph, then they have exactly one common neighbor.
+\end{proposition}
+
+\begin{definition}
+    The \concept{girth} of a graph is the length of its shortest cycle. If the graph has no cycle we set it to $\infty$.
+\end{definition}
+
+
+
+
+
+
+
 
 \end{mysection}
