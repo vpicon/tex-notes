@@ -1,0 +1,234 @@
+\begin{mysection}{Heapsort}
+
+\subsection{Heaps}
+
+\vspace{-3mm}
+\begin{definition}
+A \textit{(binary) heap} data structure is an array object that we can view as a nearly complete binary tree (that is lowest level may be filled up to a point). Each node of the tree corresponds to an element of the array. An array $A$ that represents a heap is an object with an $A.length$ attribute, which counts the number of elements in the array; and an $A.heapsize$ attribute, which represents how many elements in the heap are stored within array $A$; where it is satisfied $0 \leq A.heapsize \leq A.length$.
+\end{definition}
+
+% \begin{center}
+% \tikz[subgraph text top=text centered] 
+% \graph[binary tree layout] { %, level distance=5mm
+    % % 0 [circle, draw] // {4}
+    % % 16 --  { 14 -- {8 -- {2, 4}, 7 -- {1}}, 10 -- {9, 3} };
+    % 1[] // { 16 };
+    % % 2  // { 14 };
+    % % 3  // { 10 };
+    % % 4  // { 8 };
+    % % 5  // { 7 };
+    % % 6  // { 9 };
+    % % 7  // { 3 };
+    % % 8  // { 2 };
+    % % 9  // { 4 };
+    % % 10 // { 1 };
+    % right[draw] // { e, f, g, h};
+% };
+% \end{center}
+
+\vspace{3mm}
+The root of the tree is $A[1]$, and given an index $i$ of a node we can compute the indexes of the parent and left and right child nodes.
+
+\begin{pseudocode}{Parent}{i}
+    \RETURN $\floorfunc{i/2}$
+\end{pseudocode}
+\vspace{2mm}
+\begin{pseudocode}{Left}{i}
+    \RETURN $2i$
+\end{pseudocode}
+\vspace{2mm}
+\begin{pseudocode}{Right}{i}
+    \RETURN $2i + 1$
+\end{pseudocode}
+
+\vspace{2mm}
+\begin{definition}
+There are two kinds of binary heaps: max-heaps and min-heaps. In both kinds, the values in the nodes satisfy a \concept{heap property}. In a \concept{max-heap}, the \concept{max-heap property} is that for every node other than the root, $A[\procedure{Parent}(i)] \geq A[i]$. 
+Similarly a \concept{min-heap}, the \concept{min-heap property} is that for every node other than the root, $A[\procedure{Parent}(i)] \leq A[i]$.
+\end{definition}
+
+\vspace{3mm}
+Viewing the heap as a tree, we have that the \textit{heigth}  of a node in a heap is te number of edges on the longest simple downwad path from the node to a leaf, and the \textit{height of the heap} is the height of its root. 
+
+\begin{proposition}
+Given a heap of $n$ elements, we have:
+    \begin{enumerate}
+        \item The heap has $\floorfunc{\log_2 {n}}$ elements.
+        \item With the array representation of the heap, the leaves are indexed by $\floorfunc{n/2} + 1, \floorfunc{n/2} + 2, \dotsc, n$; thus having $\ceilfunc{n/2}$ of them.
+    \end{enumerate}
+\end{proposition}
+
+
+
+\subsubsection{Zero indexed arrays}
+We discuss throughout the notes arrays with indexes starting at $1$. However, it is customary to work with zero indexed arrays. An easy way to see how to transform formulas from one set of indexes is as follows. Let $\mathcal{J}$ be the set of indexes starting at $0$ and $J$ those starting at $1$. Then given a formula (mapping) $f$, for 1-based indexes ($f: \mathcal{I} \to \mathcal{I}$), we want to find how the mapping traduces in 0-based indexes (i.e. some $g: \mathcal{J} \to \mathcal{J}$). Since we have a bijection $\phi: \mathcal{J} \to \mathcal{I}, \,\phi(j) = j + 1$, we can give the following commutative diagram.
+
+\vspace{-5mm}
+\begin{center}
+    \tikzstyle{blank}=[circle, inner sep=4pt, minimum size=6pt, align=center]
+\begin{tikzpicture}
+    \node[blank] (start) at (0, 0)    {$\mathcal{J}$};
+    \node[blank] (end)   at (3, 0)    {$\mathcal{J}$};
+    \node[blank] (mid1)  at (0, -1.5) {$\mathcal{I}$};
+    \node[blank] (mid2)  at (3, -1.5) {$\mathcal{I}$};
+
+    \draw[->]  (start.east) -- (end.west) node[above, midway, align=center] {$g$};
+    \draw[->]  (start.south) -- (mid1.north) node[left, midway, align=center] {$\phi$};
+    \draw[->]  (mid1.east) -- (mid2.west) node[below, midway, align=center] {$f$};
+    \draw[->]  (mid2.north) -- (end.south) node[right, midway, align=center] {$\phi^{-1}$};
+\end{tikzpicture}
+\end{center}
+
+\vspace{-4mm}
+Hence, we can write $g = \phi^{-1} \circ f \circ \phi$. For example, the zero based index of the parent node in a heap can be computed as:\\
+
+\vspace{-3mm}
+\begin{pseudocode}{Parent}{j}
+    \RETURN $\floorfunc{(j + 1)/2} - 1$  ~~ \COMMENT{Zero based index}
+\end{pseudocode}
+\vspace{2mm}
+
+
+
+\subsection{Maintaining the heap property}
+In order to maintain the max-heap property we call the \procedure{Max-Heapify} procedure. Given an array $A$ and an index $i$ such that the subtrees rooted at $\procedure{Left}(i)$ and $\procedure{Right}(i)$ satisfy the max-heap property, but $A[i]$ might be smaller than its children, the routine ``floats down'' $A[i]$ so that the binary tree rooted at index $i$ is a max-heap.
+
+\begin{pseudocode}{Max-Heapify}{A, i}
+    \STATE $largest = i$ ~~ \COMMENT{Current largest node}
+    \STATE $l = \procedure{Left}(i)$
+    \STATE $r = \procedure{Right}(i)$
+    \IF{$l \leq A.heapsize$ \AND $A[l] > A[i]$}
+        \STATE $largest = l$
+    \ENDIF
+    \IF{$r \leq A.heapsize$ \AND $A[l] > A[largest]$}
+        \STATE $largest = r$
+    \ENDIF
+    \newline \COMMENT{Max-Heapify the modified child subtree}
+    \IF{$largest \neq i$}
+        \STATE $\procedure{Swap}(A[i], A[largest])$
+        \STATE $\procedure{Max-Heapify}(A, largest)$
+    \ENDIF
+\end{pseudocode}
+
+\vspace{4mm}
+The running time of \procedure{Max-Heapify} on a subtree of size $n$ rooted at a given node $i$ is the $\Theta(1)$ time to fic up the relationships amog the elements $A[i]$ and its childs, plus the time to run \procedure{Max-Heapify} on a subtree rooted at one of the children of node $i$.
+It is easily seen that the child subtrees have at most $2n/3$ nodes (check for the worst case in which the heap tree is half-full). Thus the running time of the \procedure{Max-Heapify} is given by the recurrence:
+
+\[
+    T(n) = T(2n/3) + \Theta(1),
+\]
+which applying the master theorem, we get that $T(n) = O(\log_2{n})$.
+
+
+\subsection{Building a heap}
+We can use the \procedure{Max-Heapify} procedure in a bottom-up manner to convert an arbitrary array $A[1..n]$ into a max-heap. procedure in a bottom-up manner to convert an arbitrary array $A[1..n]$ into a max-heap. Since each of the leaves in the array $A[\floorfunc{n/2} + 1 .. n]$ is a 1-element max-heap, we can build a max-heap iterating upwards through all other nodes.
+
+\begin{pseudocode}{Build-Max-Heap}{A}
+    \STATE $A.heapsize = A.length$
+    \FOR{$i = \floorfunc{A.length/2}$ \,\textbf{downto} 1}
+        \STATE $\procedure{Max-Heapify}(A, i)$
+    \ENDFOR
+\end{pseudocode}
+
+\vspace{3mm}
+In order to prove its correctness, use the following loop invariant: \textit{At the start of each iteration of the \textbf{for} loop, each node $i + 1, i + 2, \dotsc, n$ is the root of a max-heap.}
+
+
+    \indent\textbf{Initialization:}  Prior to the first initialization, the nodes $\floorfunc{n/2} + 1, \floorfunc{n/2} + 2, \dotsc, n$ are leafs thus roots of trivial max-heaps. \\
+     
+    \indent\textbf{Maintenance:} The children of node $i$ are numbered greater than $i$. By the loop invariant these are childs are roots of a max-heap. This satisfies the condition on which a call to $\procedure{Max-Heapify}(A, i)$ would make at node $i$ a max-heap root. Moreover the \procedure{Max-Heapify} call preserves the property that nodes $i + 1, i + 2, \dotsc, n$ are all roots of max-heaps. Tecrementing $i$ in the \textbf{for} loop update reestablishes the loop invariant for the next iteration. \\
+     
+    \indent\textbf{Termination:} At termination, $i = 0$, hence by loop invariant, each node $1, 2, \dotsc, n$ is the root of a max-heap. In partiular, node $1$ is. \\
+
+To derive an upper bound for the running time of the \procedure{Build-Max-Heap} procedure, observe that an $n$-element heap has heaight $\floorfunc{\log_2{n}}$ and at most $\ceilfunc{n/2^{h + 1}}$ nodes of any height $h$. Since the time required by \concept{Max-Heapify} when called on a node of height $h$ is $O(log_2{n}) = O(h)$, we can express the total cost of \procedure{Build-Max-Heap} as being bounded above by:
+\vspace{-4mm}
+\[
+    \sum_{h = 0}^{\floorfunc{\log_2{n}}} \ceilfunc{\frac{n}{2^{h + 1}}}O(h) = O\left({n \sum_{h = 0}^{\floorfunc{\log_2{n}}} \frac{h}{2^h}}\right) ,
+\]
+\vspace{-2mm}
+and using the fact that $\sum_{h = 0} ^{\infty} h/2^h = 2$, constant, we finally can write
+\vspace{-2mm}
+\[
+    T(n) = O\left({n \sum_{h = 0}^{\floorfunc{\log_2{n}}} \frac{h}{2^h}}\right) = O\left({n \sum_{h = 0}^{\infty} \frac{h}{2^h}}\right) = O(n).
+\]
+
+Thus we can build a max-heap from an unordered array in linear time. Similarly we achieve this same bound to build a min-heap from an unordered array.
+
+
+\subsection{The heapsort algorithm}
+The heapsort algorithm takes as an input an unordered array $A[1..n]$. It starts by building an max-heap by calling \procedure{Build-Max-Heap}. Since the maximum element on $A$ is at $A[1]$ we can put it into its final correct position by swapping it with $A[n]$. If we now discard element $A[n]$ from the heap by decrementing $A.heapsize$, the children of the new root are max-heaps, but not the new root. But we can restore the max-heap by caling $\procedure{Max-Heapify}(A, 1)$ which leaves a max-heap in $A[1..n-1]$. This proces is iterated for each node until obtaining a sorted array.
+
+\begin{pseudocode}{Heapsort}{A}
+    \STATE $\procedure{Build-Max-Heap}(A)$
+    \FOR{$i = A.length$ \,\textbf{downto} 2}
+        \STATE $\procedure{Swap}(A[1], A[i])$
+        \STATE $A.heapsize = A.heapsize - 1$
+        \STATE $\procedure{Max-Heapify}(A, 1)$
+    \ENDFOR
+\end{pseudocode}
+
+\vspace{3mm}
+A more formal proof of correctness can be done by checking the loop invariant of Exercise 6.4-2. The \procedure{Heapsort} procedure takes time $O(n\log{n})$, since the call to \procedure{Build-Max-Heap} takes $O(n)$ time, and we call $n - 1$ times the procedure \procedure{Max-Heapify} which takes time $O(\log{n})$.
+
+
+\subsection{Priority queues}
+\vspace{-3mm}
+\begin{definition}
+    A \concept{priority queue} is a data structure for mainaining a set $S$ of elements, each with an associated value called a \concept{key}. A \concept{max-priority queue} supports the following operations.
+    \begin{itemize}
+    \raggedright
+        \item $\procedure{Insert}(S, x)$ inserts the element $x$ into $S$, that is $S = S \cup \{x\}$.
+        \item $\procedure{Maximum}(S)$ returns the element of $S$ with the largest key.
+        \item $\procedure{Extract-Max}(S)$ removes and returns the element of $S$ with the largest key.
+        \item $\procedure{Increase-Key}(S, x, k)$ increases the value of element $x$'s key to the new and greater value $k$.
+    \end{itemize}
+\end{definition}
+
+Alternatively, a \concept{min-priority queue} supports operations \procedure{Insert}, \procedure{Minimum}, \procedure{Extract-Min}, \procedure{Decrease-Key}. We now study each of these procedures for max-priority queues.
+
+\begin{pseudocode}{Heap-Maximum}{A}
+    \RETURN $A[1]$
+\end{pseudocode}
+
+\vspace{4mm}
+This procedure \procedure{Heap-Maximum} implements \procedure{Maximum} in $\Theta(1)$ time.
+
+\begin{pseudocode}{Heap-Extract-Max}{A}
+    \IF{$A.heapsize < 1$}
+        \STATE \textbf{error} ``heap underflow''
+    \ENDIF
+    \STATE $max = A[1]$
+    \STATE $A[1] = A[A.heapsize]$
+    \STATE $A.heapsize = A.heapsize - 1$
+    \STATE $\procedure{Max-Heapify}(A, 1)$
+    \RETURN $max$
+\end{pseudocode}
+
+\vspace{4mm}
+The running time of \procedure{Heap-Ectract-Max} is clearly $O(\log{n})$, which comes from the call to \procedure{Max-Heapify}.
+
+For the \procedure{Heap-Increase-Key} we increase the given item's key, and changing it wits its parents, untill its parent has a greater key. At all moments the node has childs which are max-heaps, and at termination, the node is the root of a max-heap tree. Thus it terminates with a max-heap.
+
+\begin{pseudocode}{Heap-Increase-Key}{A, i, key}
+    \IF{$key < A[i]$}
+        \STATE \textbf{error} ``new key is smaller than current key''
+    \ENDIF
+    \STATE $A[i] = key$
+    \WHILE{$i > 1$ \AND $A[\procedure{Parent}(i) < A[i]$}
+        \STATE $\procedure{Swap}(A[i], A[\procedure{Parent}(i))$
+        \STATE $i = \procedure{Parent}(i)$
+    \ENDWHILE 
+\end{pseudocode}
+
+\vspace{4mm}
+The running time of \procedure{Heap-Increase-Key} is $O(\log{n})$ since the path from the last node updated and the initial element at $i$, has length $O(\log{n})$.
+
+The procedure \procedure{Max-Heap-Insert} inserts a new key at the end of the heap (incrementing heap size) with value $-\infty$, thus maintaining the max-heap property, and calls \procedure{Heap-Increase-Key} to this new last node with the value we want to add. Clearly $O(\log{n)}$ time.
+
+\begin{pseudocode}{Heap-Increase-Max}{A, i, key}
+    \STATE $A.heapsize = A.heapsize + 1$
+    \STATE $A[A.heapsize] = -\infty$
+    \STATE $\procedure{Heap-Increase-Key}(A, A.heapsize, key)$
+\end{pseudocode}
+
+\end{mysection}

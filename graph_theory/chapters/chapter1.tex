@@ -94,7 +94,49 @@ When we name a graph  without naming its vertices, we often mean its isomorphism
 \end{definition}
 
 
+\subsection{Paths, Cycles and Trails}
+\vspace{-3mm}
+\begin{definition}
+    A \concept{walk} is a list $v_0, e_1, v_1, \dotsc, e_k, v_k$ of vertices and edges such that, for $1 \leq i \leq k$, the edge $e_i$ has endpoints $v_{i - 1}$ and $v_i$. A \concept{trail} is a walk with no repeated edge. A \concept{$u, v$-walk} or \concept{$u, v$-trail} has first vertex $u$ and last vertex $v$; these are its \concept{endpoints}. A \concept{$u, v$-path} is a path whose vertices of degree $1$ (its \concept{endpoints}) are $u$ and $v$; the others are its \concept{internal vertices}.
 
+    The \concept{length} of a walk, trail, path, or cycle, is its number of edges. A walk or trail is \concept{closed} if its endpoints are the same.
+\end{definition}
+
+\vspace{3mm}
+The reason for listing the edges in a walk is to distinguish among multiple edges in a multigraph. In a simple graph, a walk (path, trail or cycle) is completely specified by its ordered list of vertices.
+
+
+\begin{definition}
+    A graph $G$ is \concept{connected} if it has a $u, v$-path for every $u, v \in V(G)$ (otherwise, $G$ is \concept{disconnected}). If $G$ has a $u, v$-path, then $u$ is \concept{connected to} $v$ in $G$. The \concept{connection relation} on $V(G)$ is defined as consists of the ordered pairs $(u, v)$ such that $u$ is connected to $v$.
+\end{definition}
+
+\begin{lemma}
+    Every $u, v$-walk contains a $u, v$-path.
+\end{lemma}
+
+\begin{proposition}
+    The connection relation on $V(G)$ in a graph $G$ is an equivalence relation.
+\end{proposition}
+
+\begin{remark}
+    We need the above lemma to prove for transitivity. Indeed if there is a $u,v$-path and a $v, w$-path, there is no guarantee that the path obtained by concatenating both paths ($uPvP'w$) is a path, since they \underline{may have repeated edges}. It is however, by the lemma, a $u, w$-walk. Thus, there is a $u, w$-path.
+\end{remark}
+
+\begin{remark}
+    By transitivity on connection relation, we ca prove that a graph is connected by showing that from each vertex in the graph there is a walk to one fixed vertex.
+\end{remark}
+
+\begin{definition}
+    The \concept{components} of a graph $G$ are its maximal connected subgraphs. A component (or graph) is \concept{trivial} if it has no edges; otherwise it is \concept{nontrivial}. An \concept{isolated vertex} is a vertex of degree $0$.
+\end{definition}
+
+\begin{remark}
+    Components are pairwise disjoint; and are formed by the element of the equivalence classes of the connection relation.
+\end{remark}
+
+\begin{proposition}
+    Every graph with $n$ vertices and $k$ edges has at least $n - k$ components.
+\end{proposition}
 
 
 

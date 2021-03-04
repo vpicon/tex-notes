@@ -1,7 +1,7 @@
 TEXPROCESSOR := pdflatex
 TEXFLAGS := -shell-escape
 
-TARGET := introduction_to_algorithms
+TARGET := modern_operating_systems
 SOURCES := $(wildcard *.tex)
 SOURCES += $(wildcard chapters/*.tex)
 

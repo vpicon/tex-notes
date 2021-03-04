@@ -1,0 +1,138 @@
+\begin{mysection}{Quicksort}
+
+\subsection{Description of quicksort}
+Quicksort applies the divide-and-conquer for sorting a typical subarray $A[p..r]$
+\begin{itemize}
+        \item \textbf{Divide:} Partition (rearrange) the array $A[p..r]$ into two (possibly empty) subarrays $A[p..q - 1]$ and $A[q + 1..r]$ such that each element of $A[p..q - 1]$ is $\leq A[q]$, which in turn is, $\geq$ than any element in $A[q + 1 .. r]$. Compute the index $q$ as part of the partitioning procedure.
+        \item \textbf{Conquer:} Sort the two subarrays $A[p..q - 1]$ and $A[q + 1..r]$ by recursive calls to quicksort.
+        \item \textbf{Combine:} Because the subarrays are already sorted, no need to combine them: the entire array $A[p..r]$ is now sorted.
+\end{itemize}
+
+\noindent The following procedure implements quicksort:
+
+\begin{pseudocode}{Quicksort}{A, p, r}
+    \IF{$p < r$}
+        \STATE $q = \procedure{Partition}(A, p, r)$
+        \STATE $\procedure{Quicksort}(A, p, q - 1)$
+        \STATE $\procedure{Quicksort}(A, q + 1, r)$
+    \ENDIF
+\end{pseudocode}
+
+\vspace{3mm}
+The key to this algorithm is the \procedure{Partition} procedure, which rearranges the subarray $A[p..r]$ in place.
+
+\begin{pseudocode}{Partition}{A, p, r}
+    \STATE $x = A[r]$
+    \STATE $i = p - 1$
+    \FOR{$j = p$ \TO $r - 1$}
+        \IF{$A[j] \leq x$}
+            \STATE $i = i + 1$
+            \STATE $\procedure{Swap}(A[i], A[j])$
+        \ENDIF
+    \ENDFOR
+    \STATE $\procedure{Swap}(A[i + 1], A[r])$
+    \RETURN $i + 1$
+\end{pseudocode}
+
+    \vspace{3mm}
+    We can prove the above \procedure{Partition} procedure with the following loop invariant: \textit{At the beginning of each iteration of the loop of lines 3-7, for any array index $k$,
+    \vspace{-1.5mm}
+    \begin{smallenumerate}
+        \item If $p \leq k \leq i$, then $A[k] \leq x$.
+        \item If $i + 1 \leq k \leq j - 1$, then $A[k] > x$.
+        \item If $k = r$, then $A[k] = x$.
+    \end{smallenumerate}
+}
+    Thus at termination of the \textbf{for} loop we have $x$ at the last position of the array, and performing the last $\procedure{Swap}(A[i + 1], A[r])$, we partition $A[p..r]$ into three regions: $\leq x, x, > x$, hence a call to quicksort at the both left and right regions yields to sorting the array $A[p..r]$.
+
+    The running time of the \procedure{Partition} on the subarray $A[p..r]$ is $\Theta(n)$, where $n = r - p + 1$.
+
+\subsection{Randomized version of quicksort}
+    In order to not depend on the hypothesis that the input comes in a random distribution, we can change the quicksort algorithm to randomize it. We could explicitly permut the input (e.g. with \procedure{Randomize-In-Place} procedure from section 5). A different approach is taken which yields to faster algorithm and simpler analysis: we will pick at random which element $x$ will be taken to partition the array into the sections $\leq x, x, > x$. Thus we swap a random element from $A[p..r]$ with $A[r]$ and call the previous \procedure{Partition} procedure:
+
+\begin{pseudocode}{Randomized-Partition}{A, p, r}
+    \STATE $i = \procedure{Random}(p, r)$
+    \STATE $\procedure{Swap}(A[i], A[r])$
+    \RETURN $\procedure{Partition}(A, p, r)$
+\end{pseudocode}
+
+    \vspace{3mm} Thus the new quicksort calls \procedure{Randomized-Partitino} instead of \procedure{Partition}:
+
+\begin{pseudocode}{Randomized-Quicksort}{A, p, r}
+    \IF{$p < r$}
+        \STATE $q = \procedure{Randomized-Partition}(A, p, r)$
+        \STATE $\procedure{Randomized-Quicksort}(A, p, q - 1)$
+        \STATE $\procedure{Randomized-Quicksort}(A, q + 1, r)$
+    \ENDIF
+\end{pseudocode}
+
+
+\subsection{Analysis of quicksort}
+\subsubsection{Worst-case analysis}
+Using the substitutiton method we will see that the running time of quicksort is $O(n^2)$. Let $T(n)$ be the worst-case time of the randomized algorithm. Then we have the recurrence:
+\[
+    T(n) = \max_{0 \leq q \leq n - 1} \{T(q) + T(n - 1 - q)\} + \Theta(n),
+\]
+where the parameter $q$ ranges from $0$ to $n - 1$, depending on the obained partitions in \procedure{Randomized-Partition}. We guess that $T(n) \leq cn^2$, for some positive constant $c$. By the substitution method we get:
+\begin{align*}
+    T(n) &\leq  \max_{0 \leq q \leq n - 1} \{cq^2 + c(n - 1 - q)^2\} + \Theta(n) \\
+         &= c \cdot \max_{0 \leq q \leq n - 1} \{q^2 + (n - 1 - q)^2\} + \Theta(n).
+\end{align*}
+
+The latter expression $q^2 + (n - 1 - q)^2$ is easily seen to achieve a maximum at either $q = 0$ or $q = n - 1$. Hence:
+\begin{align*}
+    T(n) &= c \cdot \max_{0 \leq q \leq n - 1} \{q^2 + (n - 1 - q)^2\} + \Theta(n) \\
+         &\leq c(n - 1) ^2 + \Theta(n) = cn^2 - c(2n - 1) + \Theta(n)  \\
+         &\leq cn^2.
+\end{align*}
+Where the latter is tre for large enough $c$ so that the term $c(2n - 1)$ dominates over the $\Theta(n)$ term. Hence, $T(n) = O(n^2)$. A similar argument is made to prove that $T(n) = \Omega(n^2)$ by using substitution on $T(n) \geq cn^2$ for some $c > 0$. Thus the worst case-running time of quicksort is $\Theta(n^2)$.
+
+\subsubsection{Expected running time}
+The \procedure{Quicksort} and \procedure{Randomized-Quicksort} procedure differ only in how they select the pivot element. We can then couch our analysis of \procedure{Randomized-Quicksort} by discussing the \procedure{Quicksort} algorithm and \procedure{Partition}, with the assumption that the pivot elements are selected randomly from the subarray passed to \procedure{Randomized-Partition}. We will assume distinct numbers in the array.
+
+The running time of \procedure{Quicksort} is dominated by the time spent in the \procedure{Partition} procedure. Each time the \procedure{Partition} procedure is called, it selects a pivot element, and this element is never again included in any further calls to \procedure{Quicksort} and \procedure{Partition}. Thus, there can be at most $n$ calls to \procedure{Partition}. One call to \procedure{Partition} takes $\Theta(1)$ time, plus the time spent in the \textbf{for} loop to rearrange the subarray in lines $3$-$8$. Each iteration of the \textbf{for} loop performs a comparison in line $4$, comparing the pivot element to another element of the array $A$. If we can count the \underline{total number of times such comparison is executed}, we can bound the total time spent in the \textbf{for} loop during the \underline{entire execution} of \procedure{Quicksort}.
+
+\begin{lemma}
+    Let $X$ be the total number of comparisons performed in line $4$ of \procedure{Partition} over the entire execution of \procedure{Quicksort} on an $n$-element array. Then the running time of \procedure{Quicksort} is $O(n + X)$.
+\end{lemma}
+
+\vspace{3mm}
+Thus insted to analyze how many times is made in \textit{each} call to \procedure{Partition}, we count the total number of such comparisons. To do so, we will begin to study when two elements of the array are compared. Let the elements of the array $A$ be renamed as $z_1, z_2, \dotsc, z_n$, where $z_i$ is the smallest $i$th element. Also define $Z_{ij} = \{z_i, z_{i + 1}, \dotsc, z_j\}$ to be the set of elements between $z_i$ and $z_j$, inclusive.
+
+See first that some $z_i$ and $z_j$ are compared at most once, only when one of the two are taken as pivot by \procedure{Partition} and then that element is never again compared to any other elemens in the array.
+
+The analysis use the indicator random variable $X_{ij} = \mathbbm{1} \{z_i \textrm{ is compared to } z_j \}$, where we consider whether the comparison takes place at any time duing executino of the algorithm. Since each pair is compared at most once, we can characterize the total number of comparisons by $X = \sum_{i = 1}^{n - 1} \sum_{j = i + 1}^{n} X_{ij}$, hence
+\begin{align*}
+    \expectation{X} &= \sum_{i = 1}^{n - 1} \sum_{j = i + 1}^{n} \expectation{X_{ij}}     \\
+                    &= \sum_{i = 1}^{n - 1} \sum_{j = i + 1}^{n} \prob{z_i \textrm{ is compared to } z_j}.
+\end{align*}
+
+Let us compute this last probability. First analyze when two elements are not compared. Since the elements are distinct, once a pivot $x$ is chosen with $z_i < x < z_j$, then $z_i$ and $z_j$ will not be compared at any subsequent time. On the other hand, if $z_i$ is the pivot before any other element in $Z_{ij}$, then $z_i$ will be compared to each element in $Z_{ij}$, except for itself. The same happens with $z_j$ and $Z_{ij}$. Thus $z_i$ and $z_j$ are compared if and only if the first element to be chosen as pivot from $Z_{ij}$ is either $z_i$ or $z_j$.
+
+Whe can now compute the probability that this event occurs. Prior to the point at which any element of $Z_{ij}$ is chosen as a pivot, the whole set $Z_{ij}$ is together in the same partition. Therefore, any element of $Z_{ij}$ is equally likely to be chosen as pivot. Because $\absolute{Z_{ij}} = j - i + 1$, and pivots are chosen randomly independently, the probability that any given element is the first one chosen as pivot is $1/(j - i + 1)$. Thus having:
+
+\begin{align*}
+    \mathbb{P}(z_i &\textrm{ is compared to } z_j) = \\
+                   &= \prob{z_i \textrm{ or } z_j \textrm{ is first pivot chosen from } Z_{ij}} \\
+                   &= \prob{z_i \textrm{ is first pivot chosen from } Z_{ij}} \\
+                   &~~~ +  \prob{z_i \textrm{ is first pivot chosen from } Z_{ij}} \\
+                   &= \frac{2}{j - i + 1}.
+\end{align*}
+Thus the total expectation is
+\begin{align*}
+    \expectation{X} &= \sum_{i = 1}^{n - 1} \sum_{j = i + 1}^{n} \frac{2}{j - i + 1} \\
+                    &= \sum_{i = 1}^{n - 1} \sum_{k = 1}^{n - i} \frac{2}{k + 1} \\
+                    &= \sum_{i = 1}^{n - 1} \sum_{k = 1}^{n} \frac{2}{k} \\
+                    &= \sum_{i = 1}^{n - 1} O(\log{n}) \\
+                    &= O(n\log{n}).
+\end{align*}
+
+Thus we can conclude that, using the \procedure{Randomized-Partition}, the expected running time of quicksort is $O(n\log{n})$ when values are distinct.
+
+
+
+
+
+
+
+\end{mysection}
