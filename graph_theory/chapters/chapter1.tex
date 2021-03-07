@@ -138,6 +138,21 @@ The reason for listing the edges in a walk is to distinguish among multiple edge
     Every graph with $n$ vertices and $k$ edges has at least $n - k$ components.
 \end{proposition}
 
+\begin{definition}
+    A \concept{cut-edge} or \concept{cut-vertex} of a graph is an edge or vertex whose deletion increases the number of components. We write $G - e$ or $G - M$ for the subgraph of $G$ obtained by deleting an edge $e$ or set of edges $M$. We write $G - v$ or $G - S$ for the subgraph obtained by deleting a vertex $v$ or set of vertices $S$. An \concept{induced subgraph} is a subgraph obtained by deleting a set of vertices. Write $G[T]$ for $G - \overline{T}$, where $\overline{T} = V(G) - T$; this subgraph is the subgraph of $G$ \concept{induced by} $T$.
+\end{definition}
+
+\begin{remark}
+    A set $S$ of vertices is an independent set if and only if, the subgraph induced by it has no edges.
+\end{remark}
+
+\begin{theorem}
+    An edge is a cut-edge if, and only if, it belongs to no cycle.
+\end{theorem}
+\begin{proof}
+    Check textbook for instructive proof.
+\end{proof}
+
 
 
 

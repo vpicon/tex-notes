@@ -60,6 +60,14 @@
 }
 
 
+\newenvironment{corollary}
+{%
+    \vspace{3mm}%
+    \noindent\textbf{Corollary.}\hspace{0mm}\itshape}
+{%
+}
+
+
 \newenvironment{proposition}
 {%
     \vspace{3mm}%
@@ -69,7 +77,6 @@
 
 
 \newtheorem{atheorem}{Theorem}[section]
-
 \newenvironment{theorem}
 {%
     \begin{atheorem}
@@ -91,9 +98,8 @@
 
 \newenvironment{proof}
 {%
-    \newline%
     \noindent~\textit{Proof:} ~ }%
 {%
-    \hspace*{\fill}${\tiny\blacksquare}$
+    \hspace*{\fill}${\blacksquare}$
     \vspace{2mm}%
 }
