@@ -1,7 +1,145 @@
-\begin{mysection}{The Worlds of Database Systems}
+\newpage 
+\begin{multicols}{2}   %% Use explicit multicols for figure control
+[\section{The Worlds of Database Systems}]
+
+
+    ~~~ The power of databases comes from a body of knowledge and technology th at has developed over several decades and is embodied in specialized software called a \concept{database management system} (DBMS), or ``database system''. A DBMS is a powerful tool for creating and managing large amounts of data efficiently and allowing it to persist over long periods of time, safely. These systems are among the most complex types of software available. We shall learn how to design databases, how to write programs in the various languages associated with a DBMS, and how to implement the DBMS itself.
+
 
 \stepcounter{subsection} % Skip subsection 1.1
 \subsection{Overview of a Database Management System}
+ 
+    We preesent an outline of a complete DBMS. Single boxes represent system components, while double boxes represent in-memory data structures. The solid lines indicate control and data flow, while dashed lines indicate data flow only. 
 
 
-\end{mysection}
+First we suggest there are two distinct sources of use to the DBMS:
+\begin{smallenumerate}
+    \item Conventional users and application programs that ask for data or modify data.
+    \item A \concept{database administrator}, responsible for the structure or \concept{schema} of the database.
+\end{smallenumerate}
+
+\subsubsection{Data-Definition Language Comands}
+    The second kind of commands: shcema-altering \concept{data-definition language} (DDL) commands, ara parsed by a DDL processor and passed to the execution engine, which then goes to the index/file/record manager to alter the \concept{metadata} (schema information fot the database).
+
+\subsubsection{Overview of Query Processing}
+    A user or an application program initiates some action using the \concept{data-manipulation-language} (DML). This command cannot affect the schema of the database, but may affect its contents, or extract data from it. These commands are handled by two separate subsystems.
+    
+\vspace*{5mm}
+
+% FIGURE
+\end{multicols}
+\begin{center}
+    \tikzstyle{basic}=[rectangle, inner sep=6pt, node distance=70pt, align=center]
+    \tikzstyle{box}=[basic, draw]
+    \tikzstyle{doublebox}=[box, double, double distance=1mm, outer sep=0.6mm]
+
+    \tikzstyle{arrowstyle}=[>={Stealth[round]},semithick] %shorten >=1pt,
+    \tikzstyle{control}=[->,arrowstyle,draw=black]
+    \tikzstyle{doublecontrol}=[<->,arrowstyle,draw=black]
+    \tikzstyle{data}=[<->,arrowstyle,dashed,draw=black]
+
+    \tikzstyle{edgenode}=[midway, align=center, font={\small\itshape}]
+
+\begin{tikzpicture}
+
+    \node[basic] (user) at (0,0) {User/application};
+    \node[basic] (mid)  at (4,0) { };
+    \node[basic] (dba)  at (8,0) {Database \\ administrator};
+
+    \node[box]  (querycompiler)      at (0, 0) [below of=user] {Query \\ compiler};
+    \node[box]  (transactionmanager) at (0, 0) [below of=mid] {Transaction \\ manager};
+    \node[box]  (ddlcompiler)        at (0, 0) [below of=dba] {DDL \\ compiler};
+
+    \node[box]  (execengine)  at (0, 0) [below of=querycompiler] {Execution \\ engine};
+    \node[box]  (logging)     at (0, 0) [below of=transactionmanager] {Logging and \\ recovery};
+    \node[box]  (concurrency) at (0, 0) [below of=ddlcompiler] {Concurrency \\ control};
+
+    \node[box]       (indexmanager) at (0, 0) [below of=execengine] {Index/file/record \\ manager};
+    \node[basic]     (mid2)         at (0, 0) [below of=logging] { };
+    \node[doublebox] (locktable)    at (0, 0) [below of=concurrency] {Lock \\ table};
+
+    \node[box]       (buffermanager) at (0, 0) [below of=indexmanager] {Buffer \\ manager};
+    \node[doublebox] (buffers)       at (0, 0) [below of=mid2] {Buffers};
+
+    \node[box]   (storagemanager) at (0, 0) [below of=buffermanager] {Storage \\ manager};
+    % \node[basic] (storage) at (0, 0) [below of=storagemanager] {Storage};
+    \node[cylinder, aspect=0.5, shape border rotate=90, draw, minimum height=40pt,minimum width=50pt] (storage) [below of=storagemanager, yshift=-41pt] {Storage};
+
+    % Draw database figure
+    % \node[cylinder,aspect=0.5,draw,rotate=90] (dbgraphism) at (0, 0) [below of=storage] {};
+    % -- EDGES --
+    
+    \draw[control]  (user) -- (querycompiler) node[left, edgenode] {queries, \\ updates};
+    \draw[control]  (user) -- (transactionmanager.north) node[right, edgenode] {transaction \\ ~~~~~~ commands};
+    \draw[control]  (dba)  -- (ddlcompiler) node[right, edgenode] {DDL \\ commands};
+
+    \draw[control]  (querycompiler) -- (execengine) node[left, edgenode] {query \\ plan};
+    \draw[control]  (transactionmanager) -- (logging);
+    \draw[control]  ([xshift=-15pt] transactionmanager.south east) -- (concurrency.north);
+    \draw[control]  (ddlcompiler.south) -- ([xshift=-15pt] execengine.north east);
+
+    \draw[control]  (execengine) -- (logging);
+    \draw[doublecontrol]  (execengine.south east) .. controls  ([yshift=-20pt]logging.south) .. ([xshift=15pt] concurrency.south west);
+    \draw[doublecontrol]  (execengine) -- (indexmanager) node[left, edgenode] {index, file, and \\ record requests};
+    \draw[doublecontrol]  (concurrency) -- (locktable);
+
+    \draw[doublecontrol]  (indexmanager) -- (buffermanager) node[left, edgenode] {page \\ commands};
+    \draw[doublecontrol]  (buffermanager) -- (buffers);
+
+    \draw[data]  ([xshift=-15pt] execengine.south east) .. 
+                                 controls([yshift=15pt]indexmanager.north east) and 
+                                 ([xshift=15pt]indexmanager.east) .. ([xshift=7pt] buffers.north west)
+                                 node[left, edgenode, pos=0.9] {data, \\ metadata, \\ indexes};
+    \draw[data]  ([xshift=-15pt] querycompiler.south east) .. 
+                                 controls([xshift=15pt]execengine.east) .. ([xshift=15pt] buffers.north west)
+                                 node[right, edgenode, pos=0.1] {metadata \\ ~statistics};
+    \draw[data]  (logging) -- (buffers) node[left, edgenode, pos=0.4] {log \\ pages};
+    \draw[data]  ([xshift=-15pt] ddlcompiler.south east) .. 
+                                 controls([xshift=70pt]concurrency.north east) and 
+                                 ([yshift=-105pt]locktable.east) .. (buffers.east)
+                                 node[left, edgenode, pos=0.7] {metadata~~};
+    \draw[control]  ([xshift=-15pt] logging.south east) .. 
+                                 controls([xshift=60pt] buffers.south east) and 
+                                 ([yshift=-45pt] buffers.south east) .. (buffermanager.south east);
+
+    \draw[doublecontrol]  (buffermanager) -- (storagemanager) node[left, edgenode] {read/write \\ pages};
+    \draw[doublecontrol]  (storagemanager) -- ([yshift=-10pt] storage.north);
+
+\end{tikzpicture}
+\end{center}
+\newpage
+
+\begin{multicols*}{2}
+
+    \paragraph{Answering the Query}
+    The query is parsed and optimized by a \concept{query compiler}. The resulting \concept{query plan} (sequence of actions the DBMS will perform to answer the query) is passed to the \concept{execution engine}, which issues a sequence of requests for small pieces of data (typically records or tuples of a relation) to a \concept{resource manager} that knows about data files (holding relations), the format and size of records in those files, and index files, which help find elements of data files quickly.  The requests for data are passed to the \concept{buffer manager}, which task is to bring appropriate portions of the data from secondary storage (disk) where it is kept permanently, to the main-memory buffers, communicating with a \concept{storage manager} to get data from disk. The storage manager might involve operating-system commands, but more typically, the DBMS issues commands directly to the disk controller.
+
+
+\subsubsection{Storage and Buffer Manager}
+    Data of a database normally resides in secondary storage (disk). However, to perform any useful operation on data, that data must be in main memory. The \concept{store manager} controls the placement of data on disk and its movement between disk and main memory.
+
+    The storage manager keeps track of the location of files on the disk and obtains the blocks containing a file on request from the \concept{buffer manager}. The buffer manager is responsible for partitioning the available main memory into buffers, which are page-sized regions into which disk blocks can be transferred.
+
+    So all DBMS components that need information from the disk will interact with the buffers or the buffer manager (directly or through execution engine).
+
+
+\subsubsection{Transaction Processing}
+    Queries and other DML actions are grouped into \concept{transactions}, which are units th at must be executed atomically and in isolation from other transactions. Any query or modification action can be a transaction by itself.  The execution of transactions must be \concept{durable}, the work of a completed transaction will never be lost.
+
+    The \concept{transaction manager} accepts \concept{transaction commands} from an application, which tell the transaction manager when transactions begin and end. The transaction manager performs the following tasks.
+\begin{smallenumerate}
+    \item \concept{Logging}: every change in the database is logged separately on disk, by a \concept{log manager}. So when a system failure occurs, a \concept{recovery manager} will be able to examine the log of changes and restore the database to some consistent state.
+    \item \concept{Concurrency control}: Transactions must appear to execute in isolation. May not execute atomically, but in a way that the net effect is the same as if the transactions executed one at a time.
+    \item \concept{Deadlock resolution}: resolve deadlocks produced by resource deadlocks between transactions.
+\end{smallenumerate}
+
+
+\subsubsection{The Query Processor}
+    The portion of the DBMS that most affects the performance that the user sees is the \concept{query processor}, represented by two componetnts.
+\begin{enumerate}
+    \item \concept{Query compiler}: translates query into internal form called \concept{query plan}, a sequence of operations performed on data.  The compiler may use metadata and statistics about the data to decide which sequence of operations is likely to be the fastest.
+    \item \concept{Execution engine}: executes each of the steps in the chosen query plan. 
+\end{enumerate}
+
+
+\end{multicols*}
