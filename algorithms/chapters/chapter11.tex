@@ -1,0 +1,219 @@
+\begin{mysection}{Hash Tables}
+
+Many applications require the use of an abstract data type called a \concept{dictionary}, which maintains a dynamic set of items, each with a distinct key. The operations supported by this dictionary are \procedure{Insert}, \procedure{Delete} and \procedure{Search} (search for the item in the dictionary with the given key, if such item exists). These data structures are typically implemented using a very powerful data structure called \concept{hash tables}, which allows to perform the mentioned operations in $\Theta(1)$ time. 
+
+A part from dictionaries, hash tables and their fundamental hash functions, have plenty of applications: databases, compiler variable table definitions, networking router lookup tables, substring matching, string commonalities, cryptographic hash functions ...
+
+\subsection{Direct-access tables}
+Suppose we need a dynamic set where each element has an integer key drawn from the universe $\mathcal{U} = \{0, 1, \dotsc, m - 1 \}$. A simple and primitive approach is to use direct-access tables, which stores each element in an array indexed by the key of the element.
+
+\begin{center}
+    \tikzstyle{mymat}=[
+      matrix of nodes, %math nodes,
+      text height=7pt,
+      text depth=2pt,
+      text width=36pt,
+      % align=center,
+      % anchor=west,
+      column sep=-\pgflinewidth,
+      nodes={draw},
+      column 1/.style={align=center},
+      column 2/.style={nodes={draw=none}, align=left, font={\footnotesize}, text width=30pt}
+    ]
+    \tikzstyle{nil}=[fill=black!14]
+\begin{tikzpicture}
+% \matrix[matrix of nodes,
+        % nodes={draw, minimum size=18pt, anchor=center},
+        % nodes in empty cells, 
+        % minimum height = 8pt,
+        % column 2/.style={nodes={draw=none}, font={\small}, align=left}] 
+    % (m) at (0, 0)
+    \matrix[mymat] 
+        (table) at (5, -2)
+    {
+      | [nil] |\textit{/}     & 0       \\
+      $\textrm{item}_1$       & 1       \\
+      | [nil] |\textit{/}     & 2       \\
+      $\textrm{item}_3$       & 3       \\
+      | [nil] |\textit{/}     &         \\
+      | [nil] |\textit{/}     &         \\
+      | [nil] |\textit{/}     &         \\
+      | [nil] |\textit{/}     &         \\
+      $\textrm{item}_{m - 2}$ & $m - 2$ \\
+      | [nil] |\textit{/}     & $m - 1$ \\
+    };
+
+    \draw[fill=black!14] (-0.2, -1.7) circle [x radius=65pt,y radius=60pt] ;
+    \draw[fill=white] (-0.2, -2.6) circle [x radius=50pt,y radius=30pt] ;
+
+    \node (U) at (-0.2,0)  {$\mathcal{U}$};
+    \node     at (-0.2,-0.3) [font={\footnotesize}] {(universe of keys)};
+    \node  at (-0.4,-1)  {0};
+    \node  at (-1.1,-0.8) {2};
+    \node  at (-1.8,-1.3) {5};
+    \node  at (0.8,-0.9) {$m - 1$};
+
+
+    \node (K) at (-0.9,-2.4) {$\mathcal{K}$};
+    \node     at (-0.9,-2.7) [font={\footnotesize}] {(actual keys)};
+    \node (1) at (0.2,-2.0) {1};
+    \draw[->] (1) -- (table-2-1.west);
+    \node (3) at (0.9,-2.4) {3};
+    \draw[->] (3) -- (table-4-1.west);
+    \node (m-2) at (0.6,-3.0) {$m - 2$};
+    \draw[->] (m-2) -- (table-9-1.west);
+
+\end{tikzpicture}
+\end{center}
+
+
+\noindent Where the actual keys $\mathcal{K}$, are the actual keys being used by the dictionary. This approach has two big drawbacks:
+\begin{smallenumerate}
+    \item Keys may not be integers.
+    \item Big memory usage to keep array for ALL possible key values.
+\end{smallenumerate}
+
+The first problem is solved with \concept{prehashing}: all keys are finite and discrete, thus can be represented as a finite string of bits.
+ The second problem will be solved with another approach in next section.
+
+
+\subsection{Hash Tables}
+When the set $\mathcal{K}$ of keys stored in adictionary is much smaller than the universe $\mathcal{U}$ of all possible keys, a hash table requires much less storage than a direct address table. Specifically, we can reduce the storage requirement to $\Theta(\absolute{\mathcal{K}})$, while maintaining the $\Theta(1)$ time for search operations.
+
+With hashing we define a \concept{hash function} 
+\[
+    h: \mathcal{U} \to \{0, 1, \dotsc, m - 1\},
+\]
+which maps any key from the universe of keys, to a slot in a \concept{hash table} $T[0\,..\,m - 1]$. There is one hitch: since typically $\absolute{\mathcal{U}} > m$, by the pigeon-hole principle, there will different keys which will be mapped to the same slot, a situation called a \concept{collision}.
+
+Of course, the ideal situation is to have the least collisions at all, which will be achieved by a propper hash function $h$. We present now a method for resolving collisions called chaining. Later chapters present an alternative collisino resolution method called open addressing.
+
+\subsubsection{Chaining}
+In \concept{chaining} we place all the elements that hash to the same slot, into the same linked list. We store also the key and the value in the list so that we can searh for a given key in each slot, and the list can be doubly-linked for ease of deletion of items.
+
+Thus the dictionary operations on a hash table $T$ are easy to implement with chaining:
+
+\begin{pseudocode}{Chained-Hash-Insert}{T, x}
+    \IF {there is no element with $x.key$ in list $T[h(x.key)]$}
+        \STATE insert $x$ at the head of the list
+    \ELSE
+        \STATE override such element with the new element $x$
+    \ENDIF
+\end{pseudocode}
+\vspace{2mm}
+\begin{pseudocode}{Chained-Hash-Delete}{T, x}
+    \STATE delete x from the list $T[h(x.key)]$
+\end{pseudocode}
+\vspace{2mm}
+\begin{pseudocode}{Chained-Hash-Search}{T, k}
+    \STATE search for an element with key $k$ in list $T[h(k)]$
+\end{pseudocode}
+
+
+\vspace{5mm}
+All these operations require searching in the list $T[h(k)]$ for some key $k$. Thus the worst case time of these operations is proportional to the length of the list $T[h(k)]$. Thus if $n = \absolute{\mathcal{K}}$, the worst-case behavior for hashing with chaining is then all $n$ elements end up in the same linked list, and these operations take $\Theta(n)$ time! Hash tables however, have a very good average case (and empirically tested). We can make a first assumption for ease of analysis (however, this assumption ends up being false in reality).
+
+
+\begin{center}
+    \tikzstyle{mymat}=[
+      matrix of nodes, %math nodes,
+      text height=7pt,
+      text depth=2pt,
+      text width=15pt,
+      nodes in empty cells, 
+      % align=center,
+      % anchor=west,
+      column sep=-\pgflinewidth,
+      nodes={draw}, 
+      node distance=60pt,
+      column 1/.style={align=center},
+      column 2/.style={nodes={draw=none}, align=left, font={\footnotesize}, text width=30pt}
+    ]
+    \tikzstyle{mylist}=[
+      matrix of nodes, %math nodes,
+      text height=7pt,
+      node distance=50pt,
+      text depth=2pt,
+      text width=15pt,
+      nodes in empty cells, 
+      align=center,
+      % anchor=west,
+      column sep=-\pgflinewidth,
+      nodes={draw},
+    ]
+    \tikzstyle{nil}=[fill=black!14]
+\begin{tikzpicture}
+% \matrix[matrix of nodes,
+        % nodes={draw, minimum size=18pt, anchor=center},
+        % nodes in empty cells, 
+        % minimum height = 8pt,
+        % column 2/.style={nodes={draw=none}, font={\small}, align=left}] 
+    % (m) at (0, 0)
+    \matrix[mymat] 
+        (table) at (3.4, -1.6)
+    {
+      | [nil] |\textit{/}     & 0       \\
+                              &         \\
+      | [nil] |\textit{/}     &         \\
+      | [nil] |\textit{/}     &         \\
+                              &         \\
+      | [nil] |\textit{/}     &         \\
+      | [nil] |\textit{/}     & $m - 1$ \\
+    };
+
+    \matrix[mylist] 
+        (l11) at (0,0) [right of=table-2-1]
+    {
+      $k_7$ & | [nil] |\textit{/} \\ 
+    };
+
+    \matrix[mylist] 
+        (l21) at (0,0) [right of=table-5-1]
+    {
+      $k_3$ &   \\ 
+    };
+
+    \matrix[mylist] 
+        (l22) at (0,0) [right of=l21-1-2]
+    {
+      $k_n$ & | [nil] |\textit{/} \\ 
+    };
+
+    \draw[fill=black!14] (0,-1.6) circle [x radius=50pt,y radius=55pt] ;
+    \draw[fill=white] (0, -2) circle [x radius=30pt,y radius=40pt] ;
+
+    \node (U) at (0,0)  {$\mathcal{U}$};
+    \node     at (0,-0.3) [font={\footnotesize}] {(universe of keys)};
+
+
+    \node (K) at (0,-1.0) {$\mathcal{K}$};
+    \node     at (0,-1.3) [font={\footnotesize}] {(actual keys)};
+    \node (7) at (0.2,-2.0) {$k_7$};
+    \draw[->] (1) -- (table-2-1.west);
+    \node (3) at (-0.3,-2.4) {$k_3$};
+    \draw[->] (3) -- (table-5-1.west);
+    \node (n) at (0.1,-3.0) {$k_n$};
+    \draw[->] (n) -- (table-5-1.west);
+
+    \draw[->] ([xshift=-75pt]l11.east) -- ([xshift=3.6pt]l11.west);
+    \draw[->] ([xshift=-75pt]l21.east) -- ([xshift=3.6pt]l21.west);
+    \draw[->] ([xshift=-75pt]l22.east) -- ([xshift=3.6pt]l22.west);
+
+\end{tikzpicture}
+\end{center}
+
+
+
+\paragraph{Simple Uniform Hashing:} Each key is equally likely to be linked to any slot of the table, independent of where other keys are linked.
+
+Then, for $j = 0, 1, \dotsc, m - 1$, let us denote the length of the list T[j] by $n_j$.
+
+
+
+
+
+
+
+
+
+\end{mysection}
