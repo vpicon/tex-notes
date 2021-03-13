@@ -206,7 +206,7 @@ All these operations require searching in the list $T[h(k)]$ for some key $k$. T
 
 \paragraph{Simple Uniform Hashing:} Each key is equally likely to be linked to any slot of the table, independent of where other keys are linked.
 
-Then, for $j = 0, 1, \dotsc, m - 1$, let us denote the length of the list T[j] by $n_j$.
+Then, for $j = 0, 1, \dotsc, m - 1$, let us denote the length of the list T[j] by $n_j$, so that $n = n_0 + n_1 + \dots + n_{m - 1}$. Hence, the expected value of $n_j$ is $\expectation{n_j} = n/m  \equiv \alpha$, called the \concept{load factor}.
 
 
 
