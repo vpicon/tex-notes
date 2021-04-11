@@ -20,7 +20,7 @@ Suppose we need a dynamic set where each element has an integer key drawn from t
       column 1/.style={align=center},
       column 2/.style={nodes={draw=none}, align=left, font={\footnotesize}, text width=30pt}
     ]
-    \tikzstyle{nil}=[fill=black!14]
+    \tikzstyle{nil}=[fill=black!10]
 \begin{tikzpicture}
 % \matrix[matrix of nodes,
         % nodes={draw, minimum size=18pt, anchor=center},
@@ -41,7 +41,7 @@ Suppose we need a dynamic set where each element has an integer key drawn from t
       | [nil] |\textit{/}     & $m - 1$ \\
     };
 
-    \draw[fill=black!14] (-0.2, -1.7) circle [x radius=65pt,y radius=60pt] ;
+    \draw[fill=black!10] (-0.2, -1.7) circle [x radius=65pt,y radius=60pt] ;
     \draw[fill=white] (-0.2, -2.6) circle [x radius=50pt,y radius=30pt] ;
 
     \node (U) at (-0.2,0)  {$\mathcal{U}$};
@@ -139,7 +139,7 @@ All these operations require searching in the list $T[h(k)]$ for some key $k$. T
       column sep=-\pgflinewidth,
       nodes={draw},
     ]
-    \tikzstyle{nil}=[fill=black!14]
+    \tikzstyle{nil}=[fill=black!10]
     \tikzstyle{arrow}=[->]
 \begin{tikzpicture}
 % \matrix[matrix of nodes,
@@ -178,7 +178,7 @@ All these operations require searching in the list $T[h(k)]$ for some key $k$. T
       $k_n$ & | [nil] |\textit{/} \\ 
     };
 
-    \draw[fill=black!14] (0,-1.6) circle [x radius=50pt,y radius=55pt] ;
+    \draw[fill=black!10] (0,-1.6) circle [x radius=50pt,y radius=55pt] ;
     \draw[fill=white] (0, -2) circle [x radius=30pt,y radius=40pt] ;
 
     \node (U) at (0,0)  {$\mathcal{U}$};

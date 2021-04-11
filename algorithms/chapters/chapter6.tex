@@ -7,25 +7,6 @@
 A \textit{(binary) heap} data structure is an array object that we can view as a nearly complete binary tree (that is lowest level may be filled up to a point). Each node of the tree corresponds to an element of the array. An array $A$ that represents a heap is an object with an $A.length$ attribute, which counts the number of elements in the array; and an $A.heapsize$ attribute, which represents how many elements in the heap are stored within array $A$; where it is satisfied $0 \leq A.heapsize \leq A.length$.
 \end{definition}
 
-% \begin{center}
-% \tikz[subgraph text top=text centered] 
-% \graph[binary tree layout] { %, level distance=5mm
-    % % 0 [circle, draw] // {4}
-    % % 16 --  { 14 -- {8 -- {2, 4}, 7 -- {1}}, 10 -- {9, 3} };
-    % 1[] // { 16 };
-    % % 2  // { 14 };
-    % % 3  // { 10 };
-    % % 4  // { 8 };
-    % % 5  // { 7 };
-    % % 6  // { 9 };
-    % % 7  // { 3 };
-    % % 8  // { 2 };
-    % % 9  // { 4 };
-    % % 10 // { 1 };
-    % right[draw] // { e, f, g, h};
-% };
-% \end{center}
-
 \vspace{3mm}
 The root of the tree is $A[1]$, and given an index $i$ of a node we can compute the indexes of the parent and left and right child nodes.
 
@@ -47,8 +28,81 @@ There are two kinds of binary heaps: max-heaps and min-heaps. In both kinds, the
 Similarly a \concept{min-heap}, the \concept{min-heap property} is that for every node other than the root, $A[\procedure{Parent}(i)] \leq A[i]$.
 \end{definition}
 
+\vspace*{1mm}
+\begin{center}
+    \tikzstyle{bstnode}=[circle, 
+                         draw, 
+                         fill=black!10,
+                         inner sep=0pt,
+                         text width=5mm,
+                         align=center]
+
+    \tikzstyle{bstindex}=[circle, 
+                         fill=white!0,
+                         inner sep=0pt,
+                         text width=5mm,
+                         font={\small},
+                         align=center]
+\begin{tikzpicture}
+    \node [bstindex] at (0,0.5) {1} [level distance=10mm ,sibling distance=30mm]
+        child {node [bstindex] {2} [level distance=10mm ,sibling distance=20mm] edge from parent [draw=white]
+            child {node [bstindex] {4} [level distance=10mm ,sibling distance=10mm] edge from parent [draw=white]
+                child {node [bstindex] {8} edge from parent [draw=white]}
+                child {node [bstindex] {9} edge from parent [draw=white]}}
+            child {node [bstindex] {5} [level distance=10mm ,sibling distance=10mm] edge from parent [draw=white]
+                child {node [bstindex] {10} edge from parent [draw=white]}
+                child [missing] { }}}
+        child {node [bstindex] {3} [level distance=10mm ,sibling distance=20mm] edge from parent [draw=white]
+            child {node [bstindex] {6} [level distance=10mm ,sibling distance=10mm] edge from parent [draw=white]}
+            child {node [bstindex] {7} [level distance=10mm ,sibling distance=10mm] edge from parent [draw=white]}};
+    \node [bstnode] at (0,0) {16} [level distance=10mm,sibling distance=30mm]
+        child {node [bstnode] {14} [level distance=10mm ,sibling distance=20mm]
+            child {node [bstnode] {8} [level distance=10mm ,sibling distance=10mm]
+                child {node [bstnode] {2}}
+                child {node [bstnode] {4}}}
+            child {node [bstnode] {7} [level distance=10mm ,sibling distance=10mm]
+                child {node [bstnode] {1}}
+                child [missing] { }}}
+        child {node [bstnode] {10} [level distance=10mm ,sibling distance=20mm]
+            child {node [bstnode] {9} [level distance=10mm ,sibling distance=10mm]}
+            child {node [bstnode] {3} [level distance=10mm ,sibling distance=10mm]}};
+
+    % \graph[tree layout, 
+           % nodes={
+               % circle,
+               % draw, 
+               % fill=black!10,
+               % inner sep=0pt,
+               % text width=5mm,
+               % align=center},
+           % edges={draw=black!0}]  
+           % {Knuth-> {Beeton-> Kellermann[second]-> Carnes,Tobin-> Plass-> { Lamport, Spivak}}};
+
+
+
+    \matrix(vector)[
+        matrix of nodes,
+        nodes in empty cells,
+        row 2/.style={
+            inner sep=0pt,
+            text height=3.7mm,
+            text depth=1.3mm,
+            text width=5.5mm,
+            align=center,
+            nodes={draw=black, fill=black!10}},
+        row 1/.style={
+            nodes={draw=none, minimum width=1mm, font={\small}}}
+    ] at (0, 1.35)
+      {
+          {\small 1} & {\small 2} & {\small 3} & {\small 4} & {\small 5}& {\small 6}& {\small 7}& {\small 8}& {\small 9}& {\small 10} \\
+          16 & 14 & 10 & 8 & 7 & 9 & 3 & 2 & 4 & 1\\
+      };
+
+\end{tikzpicture}
+\end{center}
+
 \vspace{3mm}
-Viewing the heap as a tree, we have that the \textit{heigth}  of a node in a heap is te number of edges on the longest simple downwad path from the node to a leaf, and the \textit{height of the heap} is the height of its root. 
+Viewing the heap as a tree, we have that the \textit{heigth}  of a node in a heap is the number of edges on the longest simple downwad path from the node to a leaf, and the \textit{height of the heap} is the height of its root. 
 
 \begin{proposition}
 Given a heap of $n$ elements, we have:
